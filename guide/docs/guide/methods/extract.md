@@ -4,9 +4,9 @@ sidebar_position: 2
 
 # ロジックの抽出
 
-既存のコードはテストを念頭に作られていないため、ほとんど出力値ベーステストはできないと思われる。
-状態ベーステストやコミュニケーションテストは実装コストが高いため、無理にそれらのテストパターンを使うより
-出力値ベーステストできるようリファクタリングするのが効果的。
+テストが導入されていない既存のプロダクトコードはテストを念頭に作られていないため、ほとんど出力値ベーステストはできないと思われます。モックを使うことでプロダクトコードを変更せずにテストを書くことは可能ですが、モックを用いたテストコードは複雑になりがちです。
+
+無理にモックを使うより出力値ベーステストできるようプロダクトコードをリファクタリングすることを検討してみてください。
 
 :::info
 
@@ -14,30 +14,30 @@ sidebar_position: 2
 
 :::
 
-## 依存がない部分の分離
+## リファクタリング
 
-ロジックとハードウェアへの指令が混じった密結合なコードからロジック部分を分離する。
-抽出したコードは依存がないため簡単にビルド、テストができる。
+組み込みソフトウェアのコードはロジックとハードウェアへの指令により構成されています。とりあえず動けばいい、という思想で作られた前任者が残したコードがロジックとハードウェアヘの指令が入り混じったものだったとします。
+
+出力値ベーステストを可能にするためこの密結合したコードをリファクタリングし、ロジック部分を抽出します。抽出したコードはハードウェアへの依存がないため簡単にビルド、テストすることができます。
 
 ### テストが難しい状態
 
-各プロセスのデータ蓄積状態をROMに保存しているある組み込み製品があったとする。
-3000Byteの領域にST_LED_INFOという型の配列`ST_LED_INFO* pList`のデータを保存している。
+各LEDの状態を示す構造体`ST_LED_INFO`の配列をROMに保存しているある組み込み製品があったとします。
 
 ```c
 typedef struct {
     uint8_t isUsed : 1;
-    uint8_t color : 7;
+    uint8_t brightness : 7;
     uint8_t ledNo;
 } ST_LED_INFO;
 ```
 
-このデータをRAMに読み出し、ある条件でソートした結果を返却する関数がある。
+このデータをRAMに読み出し、ある条件でソートした結果を返却する関数があります。
 
-```c title="dataAcm.c(プロダクトコード)"
+```c title="ledData.c(プロダクトコード)"
 int8_t ledInfoRecords_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    NvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
 
     // sort
     qsort(ledInfoRecords, num, sizeof(ST_LED_INFO), compare);
@@ -52,23 +52,22 @@ static int compare(const void* a, const void* b) {
     if (infoA->ledNo != infoB->ledNo) {
         return infoA->ledNo - infoB->ledNo;
     } else {
-        return infoA->color - infoB->color;
+        return infoA->brightness - infoB->brightness;
     }
 }
 ```
 
-詳細は省くが、NvrReadData()はROMからデータを読み出す関数であるり、プラットフォーム固有のものである。
-つまり、このプロダクトコードはハードウェアに依存したコードとロジックが混じっている。
+`nvrReadData()`はROMからデータを読み出す関数であり、プラットフォーム固有のものです。つまり、組み込み基板上では動きますが、テスト環境ではビルド、実行できません。
 
 ### テストが可能な状態
 
-先ほどの状態ではプラットフォーム固有な関数を含んでいるためテスト環境でビルドすることができない[^1]。
-そこで、テストしたい部分、とくにロジックが複雑でバグが出やすいソート部分を別ファイルに抽出する。
+先ほどの状態ではプラットフォーム固有な関数を含んでいるためテスト環境でビルド、実行できませんでした。
+そこで、テストしたい部分、とくにロジックが複雑でバグが出やすいソート部分を別ファイルに抽出することにします。
 
-```c title="dataAcm.c(ソート部分を他ファイルに分離)"
+```c title="ledData.c(ソート部分を他ファイルに分離)"
 int8_t ledInfoRecords_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    NvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
 
     // sort
     LedCtrlImpl_Sort(pList, count);
@@ -77,7 +76,7 @@ int8_t ledInfoRecords_GetStoredInfoList(ST_LED_INFO* pList) {
 }
 ```
 
-```c title="リファクタリング後のプロダクトコード(純粋関数) ledCtrlImpl.c"
+```c title="リファクタリング後のプロダクトコード(純粋関数) ledDataImpl.c"
 /*
  * ST_LED_INFOの配列をソートする
  */
@@ -88,35 +87,33 @@ void LedCtrlImpl_Sort(ST_LED_INFO* pList, size_t num) {
 /*
  * ST_LED_INFOの配列をソートするときの比較関数
  *
- * ledNoで昇順にソート
- * ledNoが同じ要素に対してはcolorで昇順にソート
+ * brightnessで昇順にソート
+ * brightnessが同じ要素に対してはledNoで昇順にソート
  */
 static int compare(const void* a, const void* b) {
     ST_LED_INFO* infoA = (ST_LED_INFO*)a;
     ST_LED_INFO* infoB = (ST_LED_INFO*)b;
 
-    if (infoA->ledNo != infoB->ledNo) {
-        return infoA->ledNo - infoB->ledNo;
+    if (infoA->brightness != infoB->brightness) {
+        return infoA->brightness - infoB->brightness;
     } else {
-        return infoA->color - infoB->color;
+        return infoA->ledNo - infoB->ledNo;
     }
 }
 ```
 
-```c title="テストコード testLedCtrlImpl.cpp"
-TEST(ledCtrlImpl, リスト取得時ledNoで昇順でソートされる) {
+```c title="テストコード testLedDataImpl.cpp"
+TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
     ST_LED_INFO ledInfoRecords[3] = {0};
-    ledInfoRecords[0].ledNoLow = 100;
-    ledInfoRecords[1].ledNoLow = 120;
-    ledInfoRecords[2].ledNoLow = 110;
-    DataAcmProcess_Sort(ledInfoRecords, 3);
+    ledInfoRecords[0].brightness = 20;
+    ledInfoRecords[1].brightness = 110;
+    ledInfoRecords[2].brightness = 60;
+    ledDataProcess_Sort(ledInfoRecords, 3);
 
-    EXPECT_EQ(100, ledInfoRecords[0].ledNoLow);
-    EXPECT_EQ(110, ledInfoRecords[1].ledNoLow);
-    EXPECT_EQ(120, ledInfoRecords[2].ledNoLow);
+    EXPECT_EQ(20, ledInfoRecords[0].brightness);
+    EXPECT_EQ(60, ledInfoRecords[1].brightness);
+    EXPECT_EQ(110, ledInfoRecords[2].brightness);
 }
 ```
 
-`ledCtrlImpl.c`以外のカバレッジは0%だが, バグの発生は複雑なロジックから発生することがほとんどのため実践的な方法である。
-
-[^1]: 次章以降で説明のダブルを使うことでテストすることもできる
+ソート部分をテストすることに成功しました。`ledData.c`は結局テストできていないままですが、バグの発生は複雑なロジックから発生することが多いため、ソート部分がテスト可能になることは十分価値があります。それに`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書く価値は低いです。

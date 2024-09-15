@@ -5,7 +5,7 @@
 
 typedef struct {
     uint8_t isUsed : 1;
-    uint8_t color : 7;
+    uint8_t brightness : 7;
     uint8_t ledNo;
 } ST_LED_INFO;
 

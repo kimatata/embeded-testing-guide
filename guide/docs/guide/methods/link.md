@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # リンカによる置き換え
 
-ビルド時にプロダクトコードの代わりにテスト用のコードをリンクさせる方法。プロダクトコードが汚れず、簡単なのでできるだけこの方法を採用するのが良い。
+ビルド時にプロダクトコードの代わりにテスト用のコードをリンクさせる方法。プロダクトコードが汚れず、簡単なのでできるだけこの方法を採用するのが良いです。
 
 例：基板上でしか動作しない`LedCtrl_LedON()`が含まれたプロダクトコードをテストしたい場合
 
@@ -12,7 +12,7 @@ sidebar_position: 4
 #include "ledCtrl.h"
 
 void turnOnRedLED(void) {
-  LedCtrl_LedON(3);
+    LedCtrl_LedON(3);
 }
 ```
 
@@ -21,29 +21,29 @@ static uint8_t led_value;
 
 // set registerレジスタに値をセット
 void LedCtrl_LedON(uint8_t ledNo) {
-  led_value = led_value | (1 << n);
-  LED_RESISTER = led_value;
+    led_value = led_value | (1 << n);
+    LED_RESISTER = led_value;
 }
 ```
 
-ビルドを通したいだけならダミーの実装が書かれたファイルをビルド時にリンクする。
+ビルドを通したいだけならダミーの実装が書かれたファイルをビルド時にリンクします。
 
 ```c title="テストダブル（ダミー）ledCtrl.c"
 void LedCtrl_LedON(uint8_t ledNo) {
-  // do nothing
+    // do nothing
 }
 ```
 
-ダミーではなくスパイを使うことで確かにLED3がONになったことをテストすることができる。
+ダミーではなくスパイを使うことでLED3がONになったことを確かめるテストを書くこともできます。
 
 ```c title="テストダブル（スパイ）ledCtrl.c"
 static uint8_t led_value;
 
 void LedCtrl_LedON(uint8_t ledNo) {
-  led_value = led_value | (1 << n);
+    led_value = led_value | (1 << n);
 }
 
 uint8_t LedCtrl_GetLedValue(){
-  return led_value;
+    return led_value;
 }
 ```

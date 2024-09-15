@@ -10,7 +10,7 @@ TEST(ledCtrlImpl, リスト取得時ledNoで昇順でソートされる) {
     ledInfoRecords[0].ledNoLow = 100;
     ledInfoRecords[1].ledNoLow = 120;
     ledInfoRecords[2].ledNoLow = 110;
-    DataAcmProcess_Sort(ledInfoRecords, 3);
+    LedImpl_Sort(ledInfoRecords, 3);
 
     EXPECT_EQ(100, ledInfoRecords[0].ledNoLow);
     EXPECT_EQ(110, ledInfoRecords[1].ledNoLow);
