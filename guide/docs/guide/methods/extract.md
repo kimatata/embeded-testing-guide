@@ -16,7 +16,7 @@ sidebar_position: 2
 
 ## リファクタリング
 
-組み込みソフトウェアのコードはロジックとハードウェアへの指令により構成されています。とりあえず動けばいい、という思想で作られた前任者が残したコードがロジックとハードウェアヘの指令が入り混じったものだったとします。
+組み込みソフトウェアのコードはロジックとハードウェアへの指令により構成されています。ロジックとハードウェア指令がうまく分離されていれば良いですが、納期に追われとりあえず動くソフトを作らなければならない状況で書かれたコードはおそらくロジックとハードウェアヘの指令が入り混じっていることでしょう。
 
 出力値ベーステストを可能にするためこの密結合したコードをリファクタリングし、ロジック部分を抽出します。抽出したコードはハードウェアへの依存がないため簡単にビルド、テストすることができます。
 
@@ -35,7 +35,7 @@ typedef struct {
 このデータをRAMに読み出し、ある条件でソートした結果を返却する関数があります。
 
 ```c title="ledData.c(プロダクトコード)"
-int8_t ledInfoRecords_GetStoredInfoList(ST_LED_INFO* pList) {
+int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
     nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
 
@@ -65,7 +65,7 @@ static int compare(const void* a, const void* b) {
 そこで、テストしたい部分、とくにロジックが複雑でバグが出やすいソート部分を別ファイルに抽出することにします。
 
 ```c title="ledData.c(ソート部分を他ファイルに分離)"
-int8_t ledInfoRecords_GetStoredInfoList(ST_LED_INFO* pList) {
+int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
     nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
 
@@ -108,7 +108,7 @@ TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
     ledInfoRecords[0].brightness = 20;
     ledInfoRecords[1].brightness = 110;
     ledInfoRecords[2].brightness = 60;
-    ledDataProcess_Sort(ledInfoRecords, 3);
+    LedDataImpl_Sort(ledInfoRecords, 3);
 
     EXPECT_EQ(20, ledInfoRecords[0].brightness);
     EXPECT_EQ(60, ledInfoRecords[1].brightness);
@@ -116,4 +116,4 @@ TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
 }
 ```
 
-ソート部分をテストすることに成功しました。`ledData.c`は結局テストできていないままですが、バグの発生は複雑なロジックから発生することが多いため、ソート部分がテスト可能になることは十分価値があります。それに`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書く価値は低いです。
+ソート部分をテストすることができました。`ledData.c`は結局テストできていないままですが、バグの発生は複雑なロジックから発生することが多いため、ソート部分がテスト可能になることは十分価値があります。それに`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書いて得られるリターンはそれほど多くないでしょう。

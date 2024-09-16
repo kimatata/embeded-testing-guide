@@ -4,11 +4,11 @@ sidebar_position: 6
 
 # モックによる置き換え
 
-モックもダブルの一種であり、DOCを置き換えるもの。ダミーやスパイのように自分で作る必要はなく、テスティングフレームワークによって用意されます。GoogleTestを使用するならGoogle Mockライブラリによって提供されます。
+モックもダブルの一種であり、DOCを置き換えるものです。ダミーやスパイのように自分で作る必要はなく、テスティングフレームワークによって用意されます。GoogleTestを使用するならGoogleMockが利用できます。
 
-ただリンクを通すためのダミーではなく、期待する動きを指定することができます。
+モックはただリンクを通すためのダミーとは違い、期待する動きを指定することができます。
 
-以下は`armCtrl.c`というロボットのアームを制御するためのコードです。`armCtrl.c`内で使われる`rotate()`や`grab()`といった関数はコラボレーターです。実際にロボットを動かす処理であり、テスト環境のPC上では動かすことはできません。
+以下は`armCtrl.c`というロボットのアームを制御するためのコードです。`armCtrl.c`内で使われる`rotate()`や`grab()`といった関数はコラボレーターです。実際にロボットを動かす処理であり、テスト環境のPC上では使うことができません。
 
 ```c title="プロダクトコード armCtrl.h"
 #ifndef ARMCTRL_H
@@ -30,6 +30,8 @@ void catchObject() {
     grab();
 }
 ```
+
+`catchObject()`の中で`rotate()`という関数が引数90で一度コールされ、`grab()`という関数がコールされることをテストしたいとします。モックを使うことで関数の呼び出し、つまりコミュニケーションをテストすることができます。
 
 ```c title="testArmCtrl.c"
 #include <gtest/gtest.h>
@@ -55,7 +57,7 @@ void mockGrab() {
     mock->grab();
 }
 
-TEST(ArmControllerTest, CallsRotateAndGrab) {
+TEST(ArmControllerTest, アームが回転し物体をつかむ) {
     MockArmController mockController;
     armCtrl::rotate = mockRotate;
     armCtrl::grab = mockGrab;
