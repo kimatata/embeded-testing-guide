@@ -3,21 +3,21 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Embeded Testing Guide',
+  tagline: 'Introduction Guide to Embedded Software Unit Testing using google test',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  // url: 'https://github.com/kimatata/EmbeddedTestingGuide',
+  // url: 'https://github.com/kimatata/embeded-testing-guide',
   url: 'https://docusaurus.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/EmbeddedTestingGuide/',
+  baseUrl: '/embeded-testing-guide/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'kimatata', // Usually your GitHub org/user name.
-  projectName: 'EmbeddedTestingGuide', // Usually your repo name.
+  projectName: 'embeded-testing-guide', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -27,7 +27,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'ja'],
   },
 
   presets: [
@@ -52,7 +52,7 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'EmbeddedTestingGuide',
+      title: 'embeded-testing-guide',
       logo: {
         alt: 'My Site Logo',
         src: 'img/icon-192.png',
@@ -65,15 +65,19 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/kimatata/embeded-testing-guide',
           label: 'GitHub',
+          position: 'right',
+        },
+        {
+          type: 'localeDropdown',
           position: 'right',
         },
       ],
     },
     footer: {
       style: 'dark',
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} embeded-testing-guide. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
