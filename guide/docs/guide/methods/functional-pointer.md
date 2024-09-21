@@ -2,86 +2,85 @@
 sidebar_position: 5
 ---
 
-# 関数ポインタによる置き換え
+# Replacing with Function Pointers
 
-単一のテストスイート実行ファイル内で、プロダクトコードとテストダブルをテストケースごとに使い分けたい時があります。その場合は「関数ポインタによる置き換え」を使います。
+There are cases where you want to alternate between product code and test doubles on a per-test-case basis within a single test suite executable. In such cases, you can use "replacing with function pointers."
 
 :::caution
 
-コードが読みづらくなるのでプロダクトコードとテストダブルを使い分ける必要ががないときは「リンカで置き換え」を使いましょう
+Since this method can make the code harder to read, use "replacing with the linker" when you don't need to switch between product code and test doubles.
 
 :::
 
-## 関数ポインタの切り替え方法
+## How to Switch with Function Pointers
 
-ファイルをUSBに書き込むキューを登録するための以下のような関数があります。
+Consider the following function for registering a file write queue to USB:
 
-```c title="関数宣言(変更前)"
+```c title="original function declaration"
 void FileManager_EnQueue(ST_QUEUE_ELEMENT* el)
 ```
 
-プロダクトコード`FileManager_EnQueue_Real`とテストダブル`FileManager_EnQueue_Mock`を使い分けるために関数宣言を関数ポインタの宣言に書き換えます。
+To alternate between the product code `FileManager_EnQueue_Real` and the test double `FileManager_EnQueue_Mock`, change the function declaration to a function pointer declaration.
 
-```c title="関数宣言(変更後)"
+```c title="function declaration using function pointer"
 extern void (*FileManager_EnQueue)(ST_QUEUE_ELEMENT* el);
 ```
 
-プロダクトコードの関数ポインタ`FileManager_EnQueue_Real`を`FileManager_EnQueue`に代入することで`FileManager_EnQueue()`の呼び出しを`FileManager_EnQueue_Real()`の呼び出しにルーティングさせます。
+By assigning the function pointer `FileManager_EnQueue_Real` of the product code to `FileManager_EnQueue`, calls to `FileManager_EnQueue()` are routed to `FileManager_EnQueue_Real()`.
 
-```c title="プロダクトコード FileManager.c"
+```c title="Product Code FileManager.c"
 void FileManager_EnQueue_Real(ST_QUEUE_ELEMENT* el) {
-    // 実際のマイコンで動作する処理
+    // Processing that runs on the actual microcontroller
 }
 void (*FileManager_EnQueue)(ST_QUEUE_ELEMENT* el) = FileManager_EnQueue_Real;
 ```
 
-テストダブル`FileManager_EnQueue_Mock`を使いたいテストケースでは`FileManager_EnQueue`にテストダブルを参照する関数ポインタ`FileManager_EnQueue_Mock`を代入し、テストケースの後処理で元の参照に戻しておくことでそのテストケースでだけ`FileManager_EnQueue_Mock`を使うことができます。
+In test cases where you want to use the test double `FileManager_EnQueue_Mock`, assign the function pointer `FileManager_EnQueue_Mock` to `FileManager_EnQueue`. After the test case finishes, restore the original reference so that only that test case uses `FileManager_EnQueue_Mock`.
 
-```c title="FileManager_EnQueueを使いたいテストケース"
+```c title="Test Code test case using real"
 void FileManager_EnQueue_Mock(ST_QUEUE_ELEMENT* el) {
-    // テストダブルの処理
+    // Test double processing
 }
 
-TEST_F(TestLogSave, FileManager_EnQueueをつかったテストケース) {
+TEST_F(TestLogSave, TestCaseUsingFileManager_EnQueue) {
 
 void (*FileManager_EnQueue_Saved)(ST_QUEUE_ELEMENT* el);
-    // 前処理
+    // Pre-test setup
     FileManager_EnQueue_Saved = FileManager_EnQueue;
     FileManager_EnQueue = FileManager_EnQueue_Mock;
 
-    // FileManager_EnQueue_Mockを使った任意の期待値チェック
+    // Perform assertions using FileManager_EnQueue_Mock
     // ..
 
-    // 後処理
+    // Post-test cleanup
     FileManager_EnQueue = FileManager_EnQueue_Saved;
 }
 ```
 
-## GoogleTestでのTips
+## Tips for GoogleTest
 
-GoogleTestであるテストファイル内で`FileManager_EnQueue_Mock`を使いたい場合、以下のように`SetUp()`を定義しておくと
-各テストケース毎にポインタの代入を行う必要がなくなり、テストが読みやすくなるので便利です。
+When you want to use `FileManager_EnQueue_Mock` throughout a test file in GoogleTest, defining `SetUp()` like below will eliminate the need to assign the pointer in each test case. This makes the tests easier to read.
 
-```c title="テストコード テストクラス"
+```c title="Test Code tetst class"
 class TestLogSave: public ::testing::Test {
   protected:
     void (*FileManager_EnQueue_Saved)(ST_QUEUE_ELEMENT* el);
 
     void SetUp() override {
-        // FileManager_EnQueueはモック(FileManager_EnQueue_Mock)を使用する
+        // Use mock (FileManager_EnQueue_Mock) for FileManager_EnQueue
         FileManager_EnQueue_Saved = FileManager_EnQueue;
         FileManager_EnQueue = FileManager_EnQueue_Mock;
     }
 
     void TearDown() override {
-        // FileManager_EnQueueをプロダクトコード(FileManager_EnQueue_Real)の参照に戻す
+        // Restore FileManager_EnQueue to reference the product code (FileManager_EnQueue_Real)
         FileManager_EnQueue = FileManager_EnQueue_Saved;
     }
 };
 ```
 
-```c title="テストコード テストケース"
-TEST_F(TestLogSave, FileManager_EnQueueをつかったテストケース) {
-  // 略
+```c title="Test Code test case using mock"
+TEST_F(TestLogSave, TestCaseUsingFileManager_EnQueue) {
+  // ..
 }
 ```

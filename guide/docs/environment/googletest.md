@@ -2,19 +2,19 @@
 sidebar_position: 1
 ---
 
-# Google Testのインストール
+# Installing Google Test
 
-c言語ユニットテストツール、GoogleTestはLinux上で動かします。もしWindowsにLinuxを導入する方法がわからない場合は[WSL2を導入する方法](./wsl.md)で説明していますのでそれを参考にしてください。
+GoogleTest, a unit testing tool for C (and C++), runs on Linux. If you're not sure how to set up Linux on Windows, refer to the [WSL2 setup guide](./wsl.md).
 
-事前に必要なパッケージをインストールします。
+First, install the necessary packages.
 
-|パッケージ名|用途|
+|package|use|
 |-|-|
-|`build-essential`|c, c++のビルド|
-|`cmake`|プロジェクトのビルドに使用|
-|`lcov`|テストカバレッジ表示ツール|
+|`build-essential`|Used for building C and C++|
+|`cmake`|Used for building projects|
+|`lcov`|Tool for displaying test coverage|
 
-Ubuntuでは以下のコマンドでインストールできます。使用するディストリビューションによって適宜コマンドは変更してください。
+On Ubuntu, you can install them with the following commands. Adjust the commands as needed depending on your Linux distribution.
 
 ```bash title=""
 sudo apt install build-essential
@@ -22,40 +22,39 @@ sudo apt install lcov
 sudo apt install cmake
 ```
 
-### googletestのインストール
+### Installing GoogleTest
 
 :::info
 
-googletest用のパッケージ`libgtest-dev`が存在しますが、古いバージョンだとgoogle mockが同梱されていないためソースコードをレポジトリから取得し、直接それをビルドして使用します。
+A package for GoogleTest, `libgtest-dev`, exists, but older versions do not include Google Mock. Therefore, it's recommended to clone the repository and build the source code directly.
 
 :::
 
-
-ソースコードをクローンします。
+Clone the source code:
 
 ```bash
 git clone https://github.com/google/googletest.git
 cd googletest
 ```
 
-ビルド用のディレクトリを作成します。
+Create a build directory:
 
 ```bash
 mkdir build
 cd build
 ```
 
-CMakeを使ってビルドを実行します。
+Build using CMake:
 
 ```bash
 cmake ..
 make
 ```
 
-ライブラリをシステムにインストールします。
+Install the libraries into your system:
 
 ```bash
 sudo make install
 ```
 
-これによりビルド成果物`libgmock.a`, `libgmock_main.a`, `libgtest.a`, `libgtest_main.a`が`/usr/local/lib`フォルダに配置され、googletest, googlemockが利用可能になりました。
+This will place the build binary `libgmock.a`, `libgmock_main.a`, `libgtest.a`, and `libgtest_main.a` in the /usr/local/lib folder, making GoogleTest and GoogleMock available for use.

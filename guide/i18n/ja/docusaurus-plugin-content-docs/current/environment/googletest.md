@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Google Testのインストール
 
-c言語ユニットテストツール、GoogleTestはLinux上で動かします。もしWindowsにLinuxを導入する方法がわからない場合は[WSL2を導入する方法](./wsl.md)で説明していますのでそれを参考にしてください。
+c言語（およびC++）ユニットテストツール、GoogleTestはLinux上で動かします。もしWindowsにLinuxを導入する方法がわからない場合は[WSL2を導入する方法](./wsl.md)で説明していますのでそれを参考にしてください。
 
 事前に必要なパッケージをインストールします。
 

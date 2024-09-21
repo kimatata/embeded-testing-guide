@@ -2,13 +2,13 @@
 sidebar_position: 2
 ---
 
-# テストコードのビルド
+# Building Test Code
 
-CMakeによりビルドする
+Build using CMake.
 
-例として本レポジトリのサンプルコードをビルドする`CMakeLists.txt`を紹介する。プロジェクトのディレクトリ構造に従って修正が必要となる。
+Here is an example of a CMakeLists.txt for building the sample code in this repository. You will need to modify it according to the directory structure of your project.
 
-## ディレクトリ構造
+## Directory Structure
 
 ```markdown
 `code`
@@ -25,37 +25,37 @@ CMakeによりビルドする
 
 ## CMakeLists.txt
 
-### プロジェクト
+### Project
 
-サブディレクトリのCMakeLists.txtを登録
+Register the `CMakeLists.txt` files in subdirectories.
 
 ```CMakeLists.txt title="./CMakeLists.txt"
 cmake_minimum_required(VERSION 3.13)
 project(test_suite)
 
-# サブディレクトリを登録
+# Register subdirectories
 add_subdirectory(product)
 add_subdirectory(test/test)
 ```
 
-### テストコード
+### Test Code
 
 ```CMakeLists.txt title="test/test/CMakeLists.txt"
-# GTestの配置
+# Include GTest
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-# 実行ファイル作成
+# Create an executable
 add_executable(runTestSuite testled.cpp testFileManager.cpp)
 
-# runTestSuiteをコンパイルする際に必要なライブラリをリンク
+# Link necessary libraries when compiling runTestSuite
 target_link_libraries(runTestSuite ${GTEST_LIBRARIES} pthread led fileManger doubles)
 ```
 
-### ダブル
+### Doubles
 
 ```CMakeLists.txt title="Test/double/CMakeLists.txt"
-# doublesライブラリ作成
+# Create the doubles library
 add_library(doubles SHARED
     ledCtrl.c
     fileCtrl.c
@@ -64,18 +64,18 @@ add_library(doubles SHARED
 target_include_directories(doubles PUBLIC ${PROJECT_SOURCE_DIR}/test/double)
 ```
 
-### テスト対象コード
+### Production Code
 
-テスト対象コードが増えるたびに各フォルダ配下に`CmakeLists.txt`を追加します。
+As more production code is added, create additional `CMakeLists.txt` files in each folder.
 
 ```CMakeLists.txt title="led/CMakeLists.txt"
-# 環境変数
+# Define environment variables
 add_definitions(-DTEST_ENV)
 
-# 依存関係解消用のダブルを読み込み
+# Include doubles for resolving dependencies
 include_directories(../Test/double)
 
-# ledライブラリ作成
+# Create the led library
 add_library(led SHARED
   src/led/ledCtrl.c
   src/led/ledImple.c
@@ -85,13 +85,13 @@ target_include_directories(led PUBLIC ${PROJECT_SOURCE_DIR}/led)
 ```
 
 ```CMakeLists.txt title="fileManager/CMakeLists.txt"
-# 環境変数
+# environment variables
 add_definitions(-DTEST_ENV)
 
-# 依存関係解消用のダブルを読み込み
+# Include doubles for resolving dependencies
 include_directories(../Test/double)
 
-# fileManagerライブラリ作成
+# Create the fileManager library
 add_library(fileManager SHARED
   src/fileManager/fileCtrl.c
 )

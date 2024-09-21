@@ -2,14 +2,13 @@
 sidebar_position: 3
 ---
 
-# コンパイルスイッチによる置き換え
+# Replacing with Compile Switches
 
-プロダクトコードでマイコンやハードウェアに依存している箇所をコンパイルスイッチで分岐させ、それぞれの環境で使える関数を呼び出すようにする方法。
-テストのためにプロダクトコードに変更を加えており、プロダクトコードが複雑になってしまっている。
+This method involves branching in the product code with compile switches to call functions appropriate for each environment, depending on microcontroller or hardware dependencies. However, this approach modifies the product code specifically for testing, which can make the code more complex.
 
-プロダクトコードが汚れるためこの方法は避けたほうが良いです。
+It is recommended to avoid this method as it pollutes the product code.
 
-```c title="プロダクトコード led.c"
+```c title="Product Code led.c"
 #include ledCtrl.h
 
 void turnOnRedLED(void) {
@@ -21,24 +20,24 @@ void turnOnRedLED(void) {
 }
 ```
 
-```c title="プロダクトコード用のledCtrl.c"
+```c title="ledCtrl.c for Product Code "
 static uint8_t led_value;
 
-// set registerレジスタに値をセット
+// Set value in register
 void LedCtrl_LedON(uint8_t ledNo) {
     led_value = led_value | (1 << n);
     LED_RESISTER = led_value;
 }
 ```
 
-```c title="テストコード用の ledCtrl.c"
+```c title="ledCtrl.c for Test Code"
 static uint8_t led_value;
 
 void VirtualLedCtrl_LedON(uint8_t ledNo) {
     led_value = led_value | (1 << n);
 }
 
-// led_valueをテストコードから呼び出して結果を確認できるようにする
+// Allow test code to call led_value and verify the results
 uint8_t void VirtualLedCtrl_GetLedValue(void) {
     return led_value;
 }

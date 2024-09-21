@@ -2,15 +2,15 @@
 sidebar_position: 6
 ---
 
-# モックによる置き換え
+# Replacing with Mocks
 
-モックもダブルの一種であり、DOCを置き換えるものです。ダミーやスパイのように自分で作る必要はなく、テスティングフレームワークによって用意されます。GoogleTestを使用するならGoogleMockが利用できます。
+Mocks are a type of double that replaces DOC. Unlike dummies or spies, you don't need to create mocks yourself; they are provided by testing frameworks. If you're using GoogleTest, you can take advantage of GoogleMock.
 
-モックはただリンクを通すためのダミーとは違い、期待する動きを指定することができます。
+Mocks differ from dummies that are used just for linking. They allow you to specify the expected behavior.
 
-以下は`armCtrl.c`というロボットのアームを制御するためのコードです。`armCtrl.c`内で使われる`rotate()`や`grab()`といった関数はコラボレーターです。実際にロボットを動かす処理であり、テスト環境のPC上では使うことができません。
+Below is the code for controlling a robot arm in `armCtrl.c`. The functions `rotate()` and `grab()` used within `armCtrl.c` are collaborators. These functions handle actual robot operations and cannot be used on the PC during testing.
 
-```c title="プロダクトコード armCtrl.h"
+```c title="Product Code armCtrl.h"
 #ifndef ARMCTRL_H
 #define ARMCTRL_H
 
@@ -21,7 +21,7 @@ void catchObject();
 #endif // ARMCTRL_H
 ```
 
-```c title="プロダクトコード armCtrl.c"
+```c title="Product Code armCtrl.c"
 #include "armCtrl.h"
 #include "move.h"
 
@@ -31,7 +31,7 @@ void catchObject() {
 }
 ```
 
-`catchObject()`の中で`rotate()`という関数が引数90で一度コールされ、`grab()`という関数がコールされることをテストしたいとします。モックを使うことで関数の呼び出し、つまりコミュニケーションをテストすることができます。
+Suppose you want to test that within `catchObject()`, the `rotate()` function is called once with an argument of 90, and the `grab()` function is called. By using mocks, you can test the interaction between these functions.
 
 ```c title="testArmCtrl.c"
 #include <gtest/gtest.h>
@@ -40,7 +40,7 @@ extern "C" {
     #include "armCtrl.h"
 }
 
-// モッククラスの定義
+// Definition of the mock class
 class MockArmController {
 public:
     MOCK_METHOD(void, rotate, (int angle), ());
@@ -57,12 +57,12 @@ void mockGrab() {
     mock->grab();
 }
 
-TEST(ArmControllerTest, アームが回転し物体をつかむ) {
+TEST(ArmControllerTest, ArmRotatesAndGrabsObject) {
     MockArmController mockController;
     armCtrl::rotate = mockRotate;
     armCtrl::grab = mockGrab;
 
-    // catchObject()内でrotate(), grab()が呼び出されることを期待する
+    // Expect that rotate() and grab() will be called within catchObject()
     EXPECT_CALL(mockController, rotate(90)).Times(1);
     EXPECT_CALL(mockController, grab()).Times(1);
 
@@ -70,5 +70,4 @@ TEST(ArmControllerTest, アームが回転し物体をつかむ) {
 }
 ```
 
-モックは強力ですが、多用するとテストコードが仕様やふるまいというより実装の詳細をテストしているようになります。
-テストコードのメンテナンス性を損なう可能性があり、注意が必要です。
+Mocks are powerful, but overuse can lead to test code that focuses on implementation details rather than the specifications or behavior. This can negatively affect the maintainability of the test code, so caution is needed.

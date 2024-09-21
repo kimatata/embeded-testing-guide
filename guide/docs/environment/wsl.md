@@ -4,13 +4,13 @@ sidebar_position: 4
 
 import wsl2 from "./img/wsl2.png";
 
-# (参考)WSL2を用いたLinux環境構築
+# (Reference) Setting Up a Linux Environment Using WSL2
 
-ここではWindowsにWSL2を導入する方法を紹介します。
+This section introduces how to set up WSL2 on Windows.
 
 ## WSL2
 
-管理者権限でPowerShellにて以下のコマンドを実行します。しばらく待つとインストールが終わり再起動を促されます。
+Run the following command in PowerShell with administrator privileges. After a while, the installation will complete, and you will be prompted to restart your system.
 
 ```bash
 wsl --install
@@ -18,34 +18,36 @@ wsl --install
 
 ## Ubuntu
 
-再起動するとwsl2のインストールが完了し、自動でUbuntuがインストールされます。Ubuntuの画面で適当にuser名とパスワードを設定します。
+After restarting, WSL2 will be installed, and Ubuntu will automatically be installed as well. Set your username and password in the Ubuntu setup screen.
 
 ```bash
 UNIX username: your-username
 New Password: your-password
 ```
 
-## 仮想環境
+## Virtual Environment
 
-ここまでの操作で以下の図のようにWindowsマシンにLinux環境が作成されています。
+By completing the steps up to this point, a Linux environment will be created on your Windows machine as shown in the diagram below.
 
 <img src={wsl2} alt="wsl2" width="700" />[^1]
 
-エクスプローラーで以下のパスを打ち込めば仮想環境のディレクトリを見ることができます。
+You can view the directory of the virtual environment by entering the following path in File Explorer.
 
 ```bash
 \\wsl.localhost\Ubuntu\home\
 ```
 
-## レポジトリクローン
+# Clone a Repository
 
-Windows側にクローンしてしまうとLinuxが毎回ハイパーバイザを経由してソースコードにアクセスするため動作がとても遅くなってしまいます。それを回避するためLinux側にクローンしましょう。
+If you clone the repository on the Windows side, Linux will need to access the source code through a hypervisor each time, which makes the process very slow. To avoid this, clone the repository on the Linux side.
 
-以下ようなパスで適当な作業用フォルダを作成
+Create a working folder in a path like the one below:
 
 ```bash
 \\wsl.localhost\Ubuntu\home\work\
 ```
+
+Then clone your repository:
 
 ```bash
 git clone --recursive git@your-repo.git
