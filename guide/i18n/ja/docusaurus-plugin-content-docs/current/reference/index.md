@@ -5,8 +5,6 @@ import atGoogle from "./img/atGoogle.png"
 
 # 参考文献
 
-## 書籍
-
 ### Test Driven Development for Embedded C
 
 <img src={bookEmbeded} alt="" width="150" />
@@ -30,8 +28,6 @@ import atGoogle from "./img/atGoogle.png"
 <img src={atGoogle} alt="Software Engineering at Google" width="150" />
 
 [https://abseil.io/resources/swe-book](https://abseil.io/resources/swe-book)
-
-## ウェブサイト
 
 ### Google Test
 

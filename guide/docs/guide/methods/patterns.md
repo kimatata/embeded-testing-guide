@@ -2,12 +2,12 @@
 sidebar_position: 1
 ---
 
-# 依存関係の分離
+# Dependency Separation
 
-依存関係を断ち切るための方法は以下のパターンがあります。
+There are several patterns for breaking dependencies:
 
-- ロジックの抽出
-- コンパイルスイッチ
-- リンカで置き換え
-- 関数ポインタで置き換え
-- モック
+Extracting logic
+Compile-time switches
+Replacing with the linker
+Replacing with function pointers
+Using mocks

@@ -2,59 +2,59 @@
 sidebar_position: 4
 ---
 
-# ベストプラクティス
+# Best Practices
 
-## プライベートな関数をテストする方法
+## How to Test Private Functions
 
-他のファイルから呼び出すことのできないプライベートな関数(つまりc言語でいうとstatic関数)は一切テストする必要はありません。他のファイルから呼び出し可能なパブリックな関数の中でプライベートな関数な呼び出されます。そのためパブリックな関数に対してテストを書けばプライベートな関数も自ずと検証されることになります。
+Private functions (i.e., static functions in C) that cannot be called from other files do not need to be tested at all. Private functions are called within public functions that are accessible from other files. Therefore, if you write tests for public functions, the private functions will naturally be tested as well.
 
-プライベートな関数をテストのためだけにパブリックに変更するのはアンチパターンです。もしプライベートな関数を直接呼び出してテストしたいと思うなら、外部から振る舞いが見えにくい構成になっている可能性が高いので構成を見直しましょう。もしくはふるまいや仕様ではなく実装の詳細をテストしようとしているのかもしれません。
+Changing a private function to public just for testing purposes is considered an anti-pattern. If you feel the need to call and test a private function directly, it’s likely that the structure is too opaque from the outside, so you should reconsider the design. Alternatively, you might be trying to test implementation details rather than behavior or specification.
 
-## TDDは必須?
+## Is TDD Mandatory?
 
-必ずしもTDDで進める必要はないと思いますが、実装→テストコードよりもテストコード→実装の順のほうがテスト可能なインターフェースを保ちやすいと思います。
+It’s not necessary to always follow TDD (Test-Driven Development), but I believe that starting with test code before implementation helps maintain a more testable interface, compared to implementing first and then writing test code.
 
-## テストカバレッジ
+## Test Coverage
 
-カバレッジ100%を目指す必要はありません。カバレッジはプロダクトコードの内、テストで通過した行数を計算しただけのメトリクスです。
+There is no need to aim for 100% coverage. Coverage is just a metric that calculates how many lines of product code are executed during tests.
 
-例えば、以下のテストコードは条件分岐の片方しか検証していません。
+For example, the following test code only verifies one side of a conditional branch.
 
-```c title="テストコード"
-TEST(getAbsSuite, 絶対値を計算できる) {
+```c title="Test Code"
+TEST(getAbsSuite, CanCalculateAbsoluteValue) {
     int x = 3;
     int y = -2;
     EXPECT_EQ(5, getAbs(x, y));
 }
 ```
 
-```c title="プロダクトコード"
+```c title="Product code"
 int getAbs(int x, int y) {
     if (x >= y) {
       return (x - y);
     } else {
       // highlight-next-line
-      return (y - x); // こちらの分岐が検証されていない
+      return (y - x); // This branch is not being tested
     }
 }
 ```
 
-プロダクトコードのif文を3項演算子に変えただけでカバレッジが上がります。しかし、検証している内容はif文の時と同じです。
+Simply changing the if statement in the product code to a ternary operator will increase the coverage. However, what is being tested is still the same as with the if statement.
 
-```c title="プロダクトコード"
+```c title="Product code"
 int getAbs(int x, int y) {
     return (x - y) >= 0 ? (x - y) : (y-x);
 }
 ```
 
-### 期待値チェックもれ
+### Missing Expected Value Checks
 
-チームで品質の基準をカバレッジ80%などと定めてしまうとカバレッジを上げるために期待値チェックをしない人が出てくるかもしれません。
+If a team sets a coverage standard like 80%, some members might increase coverage without performing expected value checks.
 
-以下のテストコードでは期待値チェック(`EXPECT_EQ`による結果の確認)が含まれていませが、これでもプロダクトコードを通過しているのでカバレッジに含まれます。
+In the following test code, no expected value checks (confirmation via `EXPECT_EQ`) are included, but since the product code is executed, it still counts toward coverage.
 
-```c title="テストコード"
-TEST(getAbsSuite, 絶対値を計算できる) {
+```c title="Test Code"
+TEST(getAbsSuite, CanCalculateAbsoluteValue) {
     getAbs(3, -2);
     getAbs(1, 5);
 }

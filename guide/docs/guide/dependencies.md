@@ -4,26 +4,26 @@ sidebar_position: 2
 
 import colaborator from "./img/colaborator.png";
 
-# 依存関係
+# Dependencies
 
-組み込み製品のコードに対して単体テストを適用しようとしても、テスト対象コードがマイコン上でしか動かないコードに依存しているためテスト環境ではビルドが通らないはずです。このようなハードウェアやマイコン動作のための依存関係をコラボレータといいます。テストを可能にするためには、コラボレータを切り離したりテストダブルで置き換える必要があります。
+When attempting to apply unit testing to embedded product code, you may find that the code under test depends on code that only runs on the microcontroller, causing the build to fail in the test environment. These dependencies on hardware or microcontroller operation are called collaborators. To enable testing, you need to isolate these collaborators or replace them with test doubles.
 
-<img src={colaborator} alt="コラボレータ" width="500" />
+<img src={colaborator} alt="Collaborator" width="500" />
 
-||略|説明|
+||Abbreviation|Description|
 |-|-|-|
-|CUT|Code Under Test|テスト対象のコード|
-|DOC|Depended on Compenents|テスト対象のコードが依存しているコード|
-|TDOC|Transitively DOC|推移的にテスト対象のコードが依存しているコード|
+|CUT|Code Under Test|The code being tested|
+|DOC|Depended on Components|The code that the CUT depends on|
+|TDOC|Transitively DOC|The code that the CUT depends on indirectly|
 
-CUTはテストしたいロジック。DOCにはハードウェア依存のコード存在している。CUTのロジックをテストしたいが、DOCがハードウェアに依存しているため、テストコードをビルドできない。
+The CUT is the logic you want to test. DOC includes code that is hardware-dependent. You want to test the logic of the CUT, but since the DOC depends on hardware, you cannot build the test code.
 
-:::info[（参考）ダブルとは]
+:::info[Reference: What are Test Doubles?]
 
-テストダブルはフェイクやスパイ、ダミー、モックといったものをすべて含んだ言葉。
-- ダミー: リンクを通すためだけのもの
-- スタブ: 固定値を返す
-- モック: 他の関数をコールする際に、関数名、パラメータ、呼ぶ順番をチェックする。テスティングフレームワークによって用意される
-- スパイ: 自作のモック
+Test doubles are a collective term for fakes, spies, dummies, mocks, etc.
+- Dummy: Used only to allow linkage
+- Stub: Returns fixed values
+- Mock: Checks the function name, parameters, and the order in which other functions are called; provided by testing frameworks
+- Spy: A mock created by the user
 
 :::

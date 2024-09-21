@@ -2,27 +2,27 @@
 sidebar_position: 2
 ---
 
-# ロジックの抽出
+# Extracting Logic
 
-テストが導入されていない既存のプロダクトコードはテストを念頭に作られていないため、ほとんど出力値ベーステストはできないと思われます。モックを使うことでプロダクトコードを変更せずにテストを書くことは可能ですが、モックを用いたテストコードは複雑になりがちです。
+Existing product code that hasn’t introduced tests is likely not designed with testing in mind, meaning output-based tests will be challenging. While it’s possible to write tests using mocks without modifying the product code, test code using mocks tends to become complex.
 
-無理にモックを使うより出力値ベーステストできるようプロダクトコードをリファクタリングすることを検討してみてください。
+Instead of forcibly using mocks, consider refactoring the product code to enable output-based testing.
 
 :::info
 
-テスト可能なコード　=　疎結合でわかりやすいコード
+Testable code = loosely coupled, easy-to-understand code
 
 :::
 
-## リファクタリング
+## Refactoring
 
-組み込みソフトウェアのコードはロジックとハードウェアへの指令により構成されています。ロジックとハードウェア指令がうまく分離されていれば良いですが、納期に追われとりあえず動くソフトを作らなければならない状況で書かれたコードはおそらくロジックとハードウェアヘの指令が入り混じっていることでしょう。
+Embedded software code is often composed of both logic and hardware commands. Ideally, logic and hardware commands are well-separated, but in situations where deadlines are tight and the software must "just work," the code is likely to have these aspects mixed together.
 
-出力値ベーステストを可能にするためこの密結合したコードをリファクタリングし、ロジック部分を抽出します。抽出したコードはハードウェアへの依存がないため簡単にビルド、テストすることができます。
+To make output-based testing possible, refactor this tightly coupled code and extract the logic. The extracted code won’t depend on hardware, making it easier to build and test.
 
-### テストが難しい状態
+### When Testing is Difficult
 
-各LEDの状態を示す構造体`ST_LED_INFO`の配列をROMに保存しているある組み込み製品があったとします。
+Let’s consider an embedded product that stores an array of ST_LED_INFO structures indicating the status of each LED in ROM.
 
 ```c
 typedef struct {
@@ -32,9 +32,9 @@ typedef struct {
 } ST_LED_INFO;
 ```
 
-このデータをRAMに読み出し、ある条件でソートした結果を返却する関数があります。
+There is a function that reads this data into RAM and returns the sorted result based on certain conditions.
 
-```c title="ledData.c(プロダクトコード)"
+```c title="ledData.c(Product Code)"
 int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
     nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
@@ -57,14 +57,13 @@ static int compare(const void* a, const void* b) {
 }
 ```
 
-`nvrReadData()`はROMからデータを読み出す関数であり、プラットフォーム固有のものです。つまり、組み込み基板上では動きますが、テスト環境ではビルド、実行できません。
+The `nvrReadData()` function is platform-specific, reading data from ROM. While this works on the embedded board, it cannot be built or run in the test environment.
 
-### テストが可能な状態
+### When Testing Becomes Possible
 
-先ほどの状態ではプラットフォーム固有な関数を含んでいるためテスト環境でビルド、実行できませんでした。
-そこで、テストしたい部分、とくにロジックが複雑でバグが出やすいソート部分を別ファイルに抽出することにします。
+In the previous example, platform-specific functions prevented building and running the code in a test environment. To make the logic more testable, especially the sorting logic that is complex and prone to bugs, we can extract this part into a separate file.
 
-```c title="ledData.c(ソート部分を他ファイルに分離)"
+```c title="ledData.c(separate sort part to other file)"
 int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
     // read data from ROM to RAM
     nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
@@ -76,19 +75,19 @@ int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
 }
 ```
 
-```c title="リファクタリング後のプロダクトコード(純粋関数) ledDataImpl.c"
+```c title="Refactored Product code(pure function) ledDataImpl.c"
 /*
- * ST_LED_INFOの配列をソートする
+ * Sort an array of ST_LED_INFO
  */
 void LedCtrlImpl_Sort(ST_LED_INFO* pList, size_t num) {
     qsort(pList, num, sizeof(ST_LED_INFO), compare);
 }
 
 /*
- * ST_LED_INFOの配列をソートするときの比較関数
+ * Comparison function for sorting an array of ST_LED_INFO
  *
- * brightnessで昇順にソート
- * brightnessが同じ要素に対してはledNoで昇順にソート
+ * Sort in ascending order by brightness.
+ * If brightness is the same, sort in ascending order by ledNo.
  */
 static int compare(const void* a, const void* b) {
     ST_LED_INFO* infoA = (ST_LED_INFO*)a;
@@ -102,8 +101,8 @@ static int compare(const void* a, const void* b) {
 }
 ```
 
-```c title="テストコード testLedDataImpl.cpp"
-TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
+```c title="Test Code testLedDataImpl.cpp"
+TEST(ledCtrlImpl, SortsListInAscendingOrderByBrightness) {
     ST_LED_INFO ledInfoRecords[3] = {0};
     ledInfoRecords[0].brightness = 20;
     ledInfoRecords[1].brightness = 110;
@@ -116,4 +115,4 @@ TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
 }
 ```
 
-ソート部分をテストすることができました。`ledData.c`は結局テストできていないままですが、バグの発生は複雑なロジックから発生することが多いため、ソート部分がテスト可能になることは十分価値があります。それに`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書いて得られるリターンはそれほど多くないでしょう。
+Now, we are able to test the sorting logic. Although `ledData.c` itself is still not testable, bugs typically arise from complex logic. Therefore, enabling tests for the sorting logic is valuable. Additionally, `ledData.c` is relatively simple and not likely to change often, so the return on investment from writing test code for it may be limited.

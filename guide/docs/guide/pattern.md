@@ -2,30 +2,29 @@
 sidebar_position: 1
 ---
 
-# 単体テストの手法
+# Unit Testing Methods
 
-一般的にテストコードは以下の3つのパターンで期待値チェックを行います。
+In general, test code checks expected values using the following three patterns:
 
-- 出力値ベーステスト
-- 状態ベーステスト
-- コミュニケーションテスト
+- Output-based testing
+- State-based testing
+- Communication testing
 
-## 出力値ベーステスト
+## Output-based Testing
 
-テスト対象のコードが返す値が期待値と同じかどうか検証します。一番シンプルで書きやすいですが、テスト対象のコードが副作用がないことが前提です。
+This method verifies whether the value returned by the code under test matches the expected value. It is the simplest and easiest to write but assumes that the code under test has no side effects.
 
-
-```c title="出力値ベーステスト"
-TEST(calcElapsedFreeCount, オーバーフローしても正しく経過時間を計算できる) {
+```c title="Output-based Testing"
+TEST(calcElapsedFreeCount, CanCalculateElapsedTimeCorrectlyEvenWithOverflow) {
     uint32_t startCount = 0xffffffff;
     uint32_t currentCount = 0x9;
     EXPECT_EQ(10, TrpSensing_calcElapsedFreeCount(startCount, currentCount));
 }
 ```
 
-## 状態ベーステスト
+## State-based Testing
 
-テスト対象コードが実行された後の状態（メンバ変数）を確認します。出力値ベーステストにくらべ少し複雑です。c言語だと以下のような感じです。
+This method checks the state (member variables) after the code under test is executed. It is slightly more complex compared to output-based testing. In C language, it looks like this:
 
 ```c title="プロダクトコード couter.h"
 #ifndef COUNTER_H
@@ -42,7 +41,7 @@ int getCounterValue(Counter* counter);
 #endif // COUNTER_H
 ```
 
-```c title="プロダクトコード couter.c"
+```c title="production code couter.c"
 #include "counter.h"
 
 void initCounter(Counter* counter) {
@@ -58,14 +57,14 @@ int getCounterValue(Counter* counter) {
 }
 ```
 
-```c title="テストコード testCounter.c"
-TEST(CounterTest, カウンターの初期値は0) {
+```c title="test code testCounter.c"
+TEST(CounterTest, CounterInitialValueIsZero) {
     Counter counter;
     initCounter(&counter);
     EXPECT_EQ(getCounterValue(&counter), 0);
 }
 
-TEST(CounterTest, カウンター値が増える) {
+TEST(CounterTest, CounterValueIncrements) {
     Counter counter;
     initCounter(&counter);
     incrementCounter(&counter);
@@ -73,9 +72,8 @@ TEST(CounterTest, カウンター値が増える) {
 }
 ```
 
-オブジェクト指向でいうとクラスのメンバ変数の値を後から確認するイメージです。
+In object-oriented programming, this would be like checking the value of a class's member variables later.
 
-## コミュニケーションテスト
+## Communication Testing
 
-テスト対象コードが別の関数やAPIを正しく呼び出すことを確認します。モックやスパイを使う必要があるため実装コストが高いです。
-詳細は[後述](methods/mock.md)します。
+This method verifies that the code under test correctly calls other functions or APIs. Since you need to use mocks or spies, the implementation cost is higher. Details will be explained [later](methods/mock.md).

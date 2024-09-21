@@ -3,9 +3,7 @@ import unitTesting from "./img/unitTesting.jpg"
 import bookDevelopment from "./img/bookDevelopment.png"
 import atGoogle from "./img/atGoogle.png"
 
-# 参考文献
-
-## 書籍
+# References
 
 ### Test Driven Development for Embedded C
 
@@ -19,6 +17,8 @@ import atGoogle from "./img/atGoogle.png"
 
 [https://book.mynavi.jp/ec/products/detail/id=134252](https://book.mynavi.jp/ec/products/detail/id=134252)
 
+(This book is the Japanese translation of : [https://www.manning.com/books/unit-testing](https://www.manning.com/books/unit-testing))
+
 ### ソフトウェア品質を高める開発者テスト 改訂版 アジャイル時代の実践的・効率的でスムーズなテストのやり方
 
 <img src={bookDevelopment} alt="ソフトウェア品質を高める開発者テスト 改訂版 アジャイル時代の実践的・効率的でスムーズなテストのやり方" width="150" />
@@ -30,8 +30,6 @@ import atGoogle from "./img/atGoogle.png"
 <img src={atGoogle} alt="Software Engineering at Google" width="150" />
 
 [https://abseil.io/resources/swe-book](https://abseil.io/resources/swe-book)
-
-## ウェブサイト
 
 ### Google Test
 

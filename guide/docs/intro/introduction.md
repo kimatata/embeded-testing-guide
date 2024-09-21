@@ -5,39 +5,39 @@ sidebar_position: 1
 import pyramid from "./img/pyramid.png";
 import anti from "./img/anti.png";
 
-# 組み込みソフトウェア開発の現状
+# Current State of Embedded Software Development
 
-私はとあるメーカーで組み込みソフトウェア開発をしています。それほど経験が豊富なわけではありませんが、私が経験したプロジェクトのソフトウェア開発プロセスは非常に遅れていました。テストコードは一切なく、テストはすべて手動で実行され、デグレが頻繁に発生し、リリースが遅れることはもはや普通のことでした。
+I work for a manufacturer developing embedded software. Although I am not very experienced, the software development process in the projects I’ve been involved in was extremely outdated. There were no test codes at all, testing was done entirely manually, regression bugs frequently occurred, and delayed releases became the norm.
 
-なぜテストの自動化を行わないのか？と上司や同僚に尋ねたところ、こんな答えが返ってきました。
+Why don’t we automate testing? When I asked my supervisors and colleagues, these were the answers I received:
 
-- 「組み込みは実際にモノを動かさないとわからないからできないでしょ」
-- 「テストコードとかってウェブ系の話だよね?」
-- 「組み込みソフトは組み込みデバイス上で動くからそれをエミュレートするのは大変だよ」
-- 「テストコードってなに?」
+- "We can’t do that because with embedded, we have to actually see things moving to understand."
+- "Isn’t test code something for web development?"
+- "Embedded software runs on embedded devices, so emulating them is difficult."
+- "What’s test code?"
 
-総じてテストの自動化なんて無理だよね。結局今のやり方しかないんだよ、という感じです。
+Overall, the sentiment was that automating tests was impossible. As a result, manual testing was seen as the only way forward.
 
-言っていることはわかります。ウェブアプリ開発ならブラウザという統一的な環境でSeleniumやplaywriteのような優れたオープンソースのツールがありますが、企業やプロジェクトごとに異なる無数の組み込みデバイスの一つをエミュレートするためのソフトを作るのはコストが釣り合わないでしょう（医療や宇宙開発分野のような一つのバグが致命的な損害につながるところなら必要かもしれません）。
+I understand what they mean. In web app development, you have a unified environment like browsers, and there are excellent open-source tools like Selenium or Playwright. However, creating software to emulate each of the countless embedded devices used by different companies and projects is not feasible, except in fields like medical or space where a single bug can have catastrophic consequences.
 
-しかしそれはマニュアルテスト(E2Eテスト)に限った話です。単体テストや統合テストが難しい理由にはなりません。テストに関する知識、経験が不足したチームでは、テストの自動化というとマニュアルテストの自動化を思い浮かべてしまうようです（キャプチャ&リプレイツールの導入に興味を持つあまりテストに詳しくない人のように）。
+But that only applies to manual tests (E2E tests). There’s no reason why unit tests or integration tests can’t be automated. In teams with little knowledge or experience in testing, automating tests tends to be confused with automating manual tests, like using capture-and-replay tools.
 
-<img src={pyramid} alt="テストピラミッド" width="300" /> [^1]
+<img src={pyramid} alt="Test Pyramid" width="300" />[^1]
 
-しかし、組み込みソフトウェアもロジックの集合なため、単体テストは可能なはずです。実際、手動テストや市場で見つかるバグのほとんどは分岐処理における条件ミスといったロジックに起因するものでした。これらは明らかに手動テストで発見すべき問題ではありません。
+But embedded software is also just a collection of logic, so unit tests should be possible. In fact, most bugs found during manual testing or in the field were caused by logical errors, such as incorrect conditional branching. These are clearly not issues that manual testing should be responsible for catching.
 
-つまり、私の職場はすべてのバグを開発工程の終盤にマニュアルテストで発見しようとしていたのです。これでは評価に時間がかかってしまうのは当然です。テストピラミッドでいうとアンチパターンとして知られている"アイスクリームコーン型"よりもさらにひどい状態だったのです（単体テストが一切ないのでコーンもない）。
+In other words, my workplace was trying to catch all bugs through manual testing at the final stages of development. This naturally resulted in extended evaluation times. In terms of the test pyramid, our process was worse than the "ice cream cone" anti-pattern, as we didn’t have any unit tests at all.
 
-<img src={anti} alt="アンチパターン" width="300" /> [^1]
+<img src={anti} alt="Anti-pattern" width="300" />[^1]
 
-こんな状態から脱却し、マニュアルテストにかかる工数の削減とバグの早期発見による品質向上を達成するため私は組み込みソフトウェア開発にも単体テスト導入が必要なことをチームに説明しました。説明を受けたメンバーの反応はまちまちです。
+To break free from this situation and improve quality by reducing manual testing workload and finding bugs earlier, I explained to my team that we needed to introduce unit tests into embedded software development. The reactions were mixed:
 
-- あんまりテストについてピンときていない
-- なんかすごそうだけど実践方法がわからない
-- 今のプロジェクトが忙しいから新しいこと覚えてる暇がない
+- Some didn’t quite understand the importance of testing.
+- Some thought it seemed great but didn’t know how to implement it.
+- Some said they were too busy with the current project to learn something new.
 
-なのでこのチームにテストを根付かせる活動はまだ道半ばです。私のかかわっている製品ではもちろん単体テストを導入し、CIを回せています。その結果を紹介するなどして今後もテストに興味を持ってもらえるように続けてい予定です。
+So, my efforts to get unit testing established in the team are still ongoing. I’ve introduced unit testing and CI for the product I’m involved with. I plan to continue promoting the benefits of testing by sharing the results with the team.
 
-本ガイドは私がチームに単体テストを導入する方法を説明した資料を一部修正したものになります。プロダクトコードをダミーに変えたりしています。テストの重要性はわかるけど組み込みで単体テストを導入する方法がわからない、という人にとって参考になるとうれしいです。
+This guide is a slightly modified version of the materials I used to explain unit test adoption to my team. The product code examples have been replaced with dummies. I hope this will be helpful for those who understand the importance of testing but don’t know how to introduce unit tests into embedded development.
 
-[^1]: [Software Engineering at Google 11章 Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html)
+[^1]: [Software Engineering at Google Chapter 11: Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html)
