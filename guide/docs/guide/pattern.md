@@ -77,3 +77,5 @@ In object-oriented programming, this would be like checking the value of a class
 ## Communication Testing
 
 This method verifies that the code under test correctly calls other functions or APIs. Since you need to use mocks or spies, the implementation cost is higher. Details will be explained [later](methods/mock.md).
+
+![./img/communicationTest.svg](./img/communicationTest.svg)

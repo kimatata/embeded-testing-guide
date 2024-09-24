@@ -14,7 +14,7 @@ This chapter explains the general benefits of introducing unit tests. If you are
 
 ### Reducing Workload
 
-Some people may think that the workload increases because you have to write code for testing in addition to the product code needed to run things. Certainly, in the early stages of development, progress may seem faster if tests are not written. However, once a project reaches a certain scale, introducing unit tests results in lower total costs.
+Some people may think that the workload increases because you have to write code for testing in addition to the product code. Certainly, in the early stages of development, progress may seem faster if tests are not written. However, once a project reaches a certain scale, introducing unit tests results in lower total costs.
 
 <img src={breakEven} alt="Break-even Point" width="700" />
 

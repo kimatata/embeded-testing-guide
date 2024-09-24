@@ -2,6 +2,8 @@
 
 Introduction Guide to Embedded Software Unit Testing using google test
 
+This guide is a slightly modified version of the material I used to introduce unit testing to my embedded development team. I hope it will be helpful to those who understand the importance of testing but don't know how to introduce unit testing to their embedded development.
+
 ## Guide
 
 Please visit the following site:

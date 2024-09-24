@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Unit Test Frameworks
 
-For implementing unit tests in C used in embedded software, it is possible to write tests using self-made assertions, but it is better to use open-source tools. These not only support assertions but also powerful features like mocks.
+For implementing unit tests in C used in embedded software, it is possible to write tests using self-made assertions, but it is better to use open-source tools. In addition to assertions, powerful features such as mocking and coverage measurement are available.
 
 Unit testing frameworks for C are well-known for the following:
 
