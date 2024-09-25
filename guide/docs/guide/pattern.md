@@ -8,7 +8,7 @@ In general, test code checks expected values using the following three patterns:
 
 - Output-based testing
 - State-based testing
-- Communication testing
+- Communication-based testing
 
 ## Output-based Testing
 
@@ -74,8 +74,8 @@ TEST(CounterTest, CounterValueIncrements) {
 
 In object-oriented programming, this would be like checking the value of a class's member variables later.
 
-## Communication Testing
+## Communication-based Testing
 
-This method verifies that the code under test correctly calls other functions or APIs. Since you need to use mocks or spies, the implementation cost is higher. Details will be explained [later](methods/mock.md).
+This method verifies that the code under test correctly calls other functions or APIs. Verify the component being called by replacing it with a mock or spy. The implementation becomes more complex and the test code longer.
 
 ![./img/communicationTest.svg](./img/communicationTest.svg)

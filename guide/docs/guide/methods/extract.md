@@ -22,97 +22,106 @@ To make output-based testing possible, refactor this tightly coupled code and ex
 
 ### When Testing is Difficult
 
-Let’s consider an embedded product that stores an array of ST_LED_INFO structures indicating the status of each LED in ROM.
+Let’s consider an embedded product that stores an array of ST_LED_INFO structures indicating the status of each LED in EEPROM.
 
 ```c
+#define LED_COLOR_RED 0
+#define LED_COLOR_GREEN 1
+#define LED_COLOR_BLUE 2
+
 typedef struct {
     uint8_t isUsed : 1;
     uint8_t brightness : 7;
+    uint8_t color;
     uint8_t ledNo;
 } ST_LED_INFO;
 ```
 
-There is a function that reads this data into RAM and returns the sorted result based on certain conditions.
+There is a function that reads this data from EEPROM into RAM and retrieves the number of the brightest blue LED.
 
-```c title="ledData.c(Product Code)"
-int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
+```c title="ledData.c"
+int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    eeprom_read_block((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
-    // sort
-    qsort(ledInfoRecords, num, sizeof(ST_LED_INFO), compare);
-
-    return OK;
-}
-
-static int compare(const void* a, const void* b) {
-    ST_LED_INFO* infoA = (ST_LED_INFO*)a;
-    ST_LED_INFO* infoB = (ST_LED_INFO*)b;
-
-    if (infoA->ledNo != infoB->ledNo) {
-        return infoA->ledNo - infoB->ledNo;
-    } else {
-        return infoA->brightness - infoB->brightness;
+    // find brightest blue led
+    int8_t brightestLedNo = -1;
+    uint8_t maxBrightness = 0;
+    for (uint8_t i = 0; i < LED_INFO_NUM; i++) {
+        if (ledInfoRecords[i].isUsed == 1 && ledInfoRecords[i].color == LED_COLOR_BLUE) {
+            if (ledInfoRecords[i].brightness > maxBrightness) {
+                maxBrightness = ledInfoRecords[i].brightness;
+                brightestLedNo = ledInfoRecords[i].ledNo;
+            }
+        }
     }
+
+    return brightestLedNo;
 }
 ```
 
-The `nvrReadData()` function is platform-specific, reading data from ROM. While this works on the embedded board, it cannot be built or run in the test environment.
+The `eeprom_read_block()` function is platform-specific and reads data from EEPROM. In other words, it works only on the embedded board. Because `eeprom_read_block()` is included, the ledData.c file cannot be built in the test environment, and the tests cannot be executed.
 
 ### When Testing Becomes Possible
 
-In the previous example, platform-specific functions prevented building and running the code in a test environment. To make the logic more testable, especially the sorting logic that is complex and prone to bugs, we can extract this part into a separate file.
+In the previous example, platform-specific functions prevented the code from being built and executed in the test environment. To address this, we can extract the part we want to test, especially the logic that is complex and prone to bugs, into a separate file.
 
-```c title="ledData.c(separate sort part to other file)"
-int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
+```c title="ledData.c"
+int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    eeprom_read_block((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
-    // sort
-    LedCtrlImpl_Sort(pList, count);
+    // find brightest blue led
+    // highlight-next-line
+    int8_t ret = LedDataImpl_GetBrightestBlueLedNo(ledInfoRecords, LED_INFO_NUM);
 
-    return OK;
-}
-```
-
-```c title="Refactored Product code(pure function) ledDataImpl.c"
-/*
- * Sort an array of ST_LED_INFO
- */
-void LedCtrlImpl_Sort(ST_LED_INFO* pList, size_t num) {
-    qsort(pList, num, sizeof(ST_LED_INFO), compare);
+    return ret;
 }
 
-/*
- * Comparison function for sorting an array of ST_LED_INFO
- *
- * Sort in ascending order by brightness.
- * If brightness is the same, sort in ascending order by ledNo.
- */
-static int compare(const void* a, const void* b) {
-    ST_LED_INFO* infoA = (ST_LED_INFO*)a;
-    ST_LED_INFO* infoB = (ST_LED_INFO*)b;
-
-    if (infoA->brightness != infoB->brightness) {
-        return infoA->brightness - infoB->brightness;
-    } else {
-        return infoA->ledNo - infoB->ledNo;
+```c title="ledDataImpl.c"
+int8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {
+    int8_t brightestLedNo = -1;
+    uint8_t maxBrightness = 0;
+    for (uint8_t i = 0; i < size; i++) {
+        if (ledInfoRecords[i].isUsed == 1 && ledInfoRecords[i].color == LED_COLOR_BLUE) {
+            if (ledInfoRecords[i].brightness > maxBrightness) {
+                maxBrightness = ledInfoRecords[i].brightness;
+                brightestLedNo = ledInfoRecords[i].ledNo;
+            }
+        }
     }
+
+    return brightestLedNo
 }
 ```
+
+Since there are no platform-specific functions or APIs in `ledDataImpl.c`, it can now run in the test environment. Below is the test code for `ledDataImpl.c`.
 
 ```c title="Test Code testLedDataImpl.cpp"
-TEST(ledCtrlImpl, SortsListInAscendingOrderByBrightness) {
-    ST_LED_INFO ledInfoRecords[3] = {0};
-    ledInfoRecords[0].brightness = 20;
-    ledInfoRecords[1].brightness = 110;
-    ledInfoRecords[2].brightness = 60;
-    LedDataImpl_Sort(ledInfoRecords, 3);
+TEST(ledCtrlImpl, RetrievesTheLedNoOfTheBrightestBlueLed) {
+    const ST_LED_INFO ledInfoRecords[5] = {
+        {1, 100, LED_COLOR_BLUE, 0},
+        {1, 120, LED_COLOR_RED, 1},
+        {1, 90,  LED_COLOR_BLUE, 2},
+        {0, 150, LED_COLOR_BLUE, 3},
+        {1, 150, LED_COLOR_BLUE, 4}
+    };
 
-    EXPECT_EQ(20, ledInfoRecords[0].brightness);
-    EXPECT_EQ(60, ledInfoRecords[1].brightness);
-    EXPECT_EQ(110, ledInfoRecords[2].brightness);
+    int8_t ret = LedCtrlImpl_GetBrightestBlueLedNo(ledInfoRecords, 5);
+    EXPECT_EQ(4, ret);
+}
+
+TEST(ledCtrlImpl, ReturnsMinusIfNoBlueLedsAreInUse) {
+    const ST_LED_INFO ledInfoRecords[4] = {
+        {1, 100, LED_COLOR_GREEN, 0},
+        {1, 120, LED_COLOR_RED, 1},
+        {1, 90,  LED_COLOR_GREEN, 2},
+        {0, 150, LED_COLOR_BLUE, 3},
+    };
+
+    int8_t ret = LedCtrlImpl_GetBrightestBlueLedNo(ledInfoRecords, 4);
+    EXPECT_EQ(-1, ret);
 }
 ```
 
-Now, we are able to test the sorting logic. Although `ledData.c` itself is still not testable, bugs typically arise from complex logic. Therefore, enabling tests for the sorting logic is valuable. Additionally, `ledData.c` is relatively simple and not likely to change often, so the return on investment from writing test code for it may be limited.
+Since bugs often arise from complex logic, this is a practical approach. While there are no tests for `ledData.c`, it is relatively simple, and given that it is unlikely to change frequently, the return on writing test code for it may not be very high.

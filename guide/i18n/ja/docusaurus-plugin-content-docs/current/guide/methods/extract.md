@@ -22,98 +22,108 @@ sidebar_position: 2
 
 ### テストが難しい状態
 
-各LEDの状態を示す構造体`ST_LED_INFO`の配列をROMに保存しているある組み込み製品があったとします。
+各LEDの状態を示す構造体`ST_LED_INFO`の配列をEEPROMに保存しているある組み込み製品があったとします。
 
 ```c
+#define LED_COLOR_RED 0
+#define LED_COLOR_GREEN 1
+#define LED_COLOR_BLUE 2
+
 typedef struct {
     uint8_t isUsed : 1;
     uint8_t brightness : 7;
+    uint8_t color;
     uint8_t ledNo;
 } ST_LED_INFO;
 ```
 
-このデータをRAMに読み出し、ある条件でソートした結果を返却する関数があります。
+このデータをEEPROMからRAMに読み出し、青色で最も明るいLEDの番号を取得する関数があります。
 
-```c title="ledData.c(プロダクトコード)"
-int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
+```c title="ledData.c"
+int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    eeprom_read_block((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
-    // sort
-    qsort(ledInfoRecords, num, sizeof(ST_LED_INFO), compare);
-
-    return OK;
-}
-
-static int compare(const void* a, const void* b) {
-    ST_LED_INFO* infoA = (ST_LED_INFO*)a;
-    ST_LED_INFO* infoB = (ST_LED_INFO*)b;
-
-    if (infoA->ledNo != infoB->ledNo) {
-        return infoA->ledNo - infoB->ledNo;
-    } else {
-        return infoA->brightness - infoB->brightness;
+    // find brightest blue led
+    int8_t brightestLedNo = -1;
+    uint8_t maxBrightness = 0;
+    for (uint8_t i = 0; i < LED_INFO_NUM; i++) {
+        if (ledInfoRecords[i].isUsed == 1 && ledInfoRecords[i].color == LED_COLOR_BLUE) {
+            if (ledInfoRecords[i].brightness > maxBrightness) {
+                maxBrightness = ledInfoRecords[i].brightness;
+                brightestLedNo = ledInfoRecords[i].ledNo;
+            }
+        }
     }
+
+    return brightestLedNo;
 }
 ```
 
-`nvrReadData()`はROMからデータを読み出す関数であり、プラットフォーム固有のものです。つまり、組み込み基板上では動きますが、テスト環境ではビルド、実行できません。
+`eeprom_read_block()`はEEPROMからデータを読み出す関数であり、プラットフォーム固有のものです。つまり、組み込み基板上でのみ動作します。`eeprom_read_block()`が含まれているせいで`ledData.c`に対してテスト環境ではビルドができず、テストが実行できません。
 
 ### テストが可能な状態
 
 先ほどの状態ではプラットフォーム固有な関数を含んでいるためテスト環境でビルド、実行できませんでした。
-そこで、テストしたい部分、とくにロジックが複雑でバグが出やすいソート部分を別ファイルに抽出することにします。
+そこで、テストしたい部分、とくに複雑でバグが出やすいロジック部分を別ファイルに抽出することにします。
 
-```c title="ledData.c(ソート部分を他ファイルに分離)"
-int8_t LedData_GetStoredInfoList(ST_LED_INFO* pList) {
+```c title="ledData.c"
+int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
     // read data from ROM to RAM
-    nvrReadData(nvrReader, NVR_LED_INFO, 0, (LED_INFO_NUM * sizeof(ST_LED_INFO)), (void*)&ledInfoRecords[0]);
+    eeprom_read_block((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
-    // sort
-    LedCtrlImpl_Sort(pList, count);
+    // find brightest blue led
+    // highlight-next-line
+    int8_t ret = LedDataImpl_GetBrightestBlueLedNo(ledInfoRecords, LED_INFO_NUM);
 
-    return OK;
+    return ret;
 }
 ```
 
-```c title="リファクタリング後のプロダクトコード(純粋関数) ledDataImpl.c"
-/*
- * ST_LED_INFOの配列をソートする
- */
-void LedCtrlImpl_Sort(ST_LED_INFO* pList, size_t num) {
-    qsort(pList, num, sizeof(ST_LED_INFO), compare);
-}
-
-/*
- * ST_LED_INFOの配列をソートするときの比較関数
- *
- * brightnessで昇順にソート
- * brightnessが同じ要素に対してはledNoで昇順にソート
- */
-static int compare(const void* a, const void* b) {
-    ST_LED_INFO* infoA = (ST_LED_INFO*)a;
-    ST_LED_INFO* infoB = (ST_LED_INFO*)b;
-
-    if (infoA->brightness != infoB->brightness) {
-        return infoA->brightness - infoB->brightness;
-    } else {
-        return infoA->ledNo - infoB->ledNo;
+```c title="ledDataImpl.c"
+int8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {
+    int8_t brightestLedNo = -1;
+    uint8_t maxBrightness = 0;
+    for (uint8_t i = 0; i < size; i++) {
+        if (ledInfoRecords[i].isUsed == 1 && ledInfoRecords[i].color == LED_COLOR_BLUE) {
+            if (ledInfoRecords[i].brightness > maxBrightness) {
+                maxBrightness = ledInfoRecords[i].brightness;
+                brightestLedNo = ledInfoRecords[i].ledNo;
+            }
+        }
     }
+
+    return brightestLedNo
 }
 ```
+
+`ledDataImpl.c`にはプラットフォーム固有の関数やAPIがないためテスト環境で動かすことができます。以下は`ledDataImpl.c`に対するテストコードです。
 
 ```c title="テストコード testLedDataImpl.cpp"
-TEST(ledCtrlImpl, リスト取得時明るさで昇順でソートされる) {
-    ST_LED_INFO ledInfoRecords[3] = {0};
-    ledInfoRecords[0].brightness = 20;
-    ledInfoRecords[1].brightness = 110;
-    ledInfoRecords[2].brightness = 60;
-    LedDataImpl_Sort(ledInfoRecords, 3);
+TEST(ledCtrlImpl, 最も明るい青色LEDのledNoを取得) {
+    const ST_LED_INFO ledInfoRecords[5] = {
+        {1, 100, LED_COLOR_BLUE, 0},
+        {1, 120, LED_COLOR_RED, 1},
+        {1, 90,  LED_COLOR_BLUE, 2},
+        {0, 150, LED_COLOR_BLUE, 3},
+        {1, 150, LED_COLOR_BLUE, 4}
+    };
 
-    EXPECT_EQ(20, ledInfoRecords[0].brightness);
-    EXPECT_EQ(60, ledInfoRecords[1].brightness);
-    EXPECT_EQ(110, ledInfoRecords[2].brightness);
+    int8_t ret = LedCtrlImpl_GetBrightestBlueLedNo(ledInfoRecords, 5);
+    EXPECT_EQ(4, ret);
+}
+
+TEST(ledCtrlImpl, 使用している青色LEDが一つもなければNoはマイナスになる) {
+    const ST_LED_INFO ledInfoRecords[4] = {
+        {1, 100, LED_COLOR_GREEN, 0},
+        {1, 120, LED_COLOR_RED, 1},
+        {1, 90,  LED_COLOR_GREEN, 2},
+        {0, 150, LED_COLOR_BLUE, 3},
+    };
+
+    int8_t ret = LedCtrlImpl_GetBrightestBlueLedNo(ledInfoRecords, 4);
+    EXPECT_EQ(-1, ret);
 }
 ```
 
-ソート部分をテストすることができました。`ledData.c`は結局テストできていないままですが、バグの発生は複雑なロジックから発生することが多いため、ソート部分がテスト可能になることは十分価値があります。それに`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書いて得られるリターンはそれほど多くないでしょう。
+バグの発生は複雑なロジックから発生することが多いため、これは十分実践的な方法だと思います。`ledData.c`に対するテストはありませんが、`ledData.c`は単純で変更もそれほど多くはないと思われるためテストコードを書いて得られるリターンはそれほど多くないでしょう。
