@@ -4,9 +4,7 @@ sidebar_position: 3
 
 # Replacing with Compile Switches
 
-This method involves branching in the product code with compile switches to call functions appropriate for each environment, depending on microcontroller or hardware dependencies. However, this approach modifies the product code specifically for testing, which can make the code more complex.
-
-It is recommended to avoid this method as it pollutes the product code.
+This method involves branching in the product code with compile switches to call functions appropriate for each environment, depending on microcontroller or hardware dependencies. This approach should be avoided because the product code is modified specifically for testing and the code becomes complex.
 
 ```c title="Product Code led.c"
 #include ledCtrl.h

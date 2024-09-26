@@ -22,9 +22,9 @@ To make output-based testing possible, refactor this tightly coupled code and ex
 
 ### When Testing is Difficult
 
-Let’s consider an embedded product that stores an array of ST_LED_INFO structures indicating the status of each LED in EEPROM.
+Let’s consider an embedded product that stores an array of `ST_LED_INFO` structures indicating the status of each LED in EEPROM.
 
-```c
+```c title="ledData.h"
 #define LED_COLOR_RED 0
 #define LED_COLOR_GREEN 1
 #define LED_COLOR_BLUE 2
@@ -77,6 +77,7 @@ int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
 
     return ret;
 }
+```
 
 ```c title="ledDataImpl.c"
 int8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {

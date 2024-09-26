@@ -1,0 +1,42 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Intro": {
+    "message": "イントロ",
+    "description": "The label for category Intro in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Intro.link.generated-index.description": {
+    "message": "Intro",
+    "description": "The generated-index page description for category Intro in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Guide": {
+    "message": "ガイド",
+    "description": "The label for category Guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Guide.link.generated-index.description": {
+    "message": "Guide",
+    "description": "The generated-index page description for category Guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.How to Break Dependency": {
+    "message": "依存関係を断ち切る",
+    "description": "The label for category How to Break Dependency in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Environment": {
+    "message": "環境",
+    "description": "The label for category Environment in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Environment.link.generated-index.description": {
+    "message": "Set up",
+    "description": "The generated-index page description for category Environment in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Reference": {
+    "message": "参考文献",
+    "description": "The label for category Reference in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Reference.link.generated-index.description": {
+    "message": "References",
+    "description": "The generated-index page description for category Reference in sidebar tutorialSidebar"
+  }
+}

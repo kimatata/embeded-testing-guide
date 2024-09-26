@@ -1,49 +1,56 @@
-import clsx from 'clsx';
-import Heading from '@theme/Heading';
-import styles from './styles.module.css';
+import clsx from "clsx";
+import Heading from "@theme/Heading";
+import styles from "./styles.module.css";
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  Svg: React.ComponentType<React.ComponentProps<"svg">>;
   description: JSX.Element;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: "Introduce unit testing",
+    Svg: require("@site/static/img/robot-arm-bro.svg").default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        This guide is a slightly modified version of the material I used to
+        introduce unit testing to my embedded development team. I hope it will
+        be helpful to those who understand the importance of testing but don't
+        know how to introduce unit testing to their embedded development.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: "Breaking dependencies",
+    Svg: require("@site/static/img/programming-bro.svg").default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        When attempting to apply unit testing to embedded product code, you may
+        find that the code under test depends on code that only runs on the
+        microcontroller. To enable testing, you need to isolate these
+        collaborators or replace them with test doubles.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: "Test code example",
+    Svg: require("@site/static/img/monitor-bro.svg").default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        I will show a sample test code using Google Test. However, this guide
+        focuses more on the methodology of introducing unit tests into embedded
+        software development rather than on how to use specific test frameworks.
+        The principles shared in this guide are consistent regardless of which
+        test framework you use.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, Svg, description }: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx("col col--4")}>
       <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div>
@@ -63,6 +70,11 @@ export default function HomepageFeatures(): JSX.Element {
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />
           ))}
+        </div>
+        <div className="text--right padding-horiz--md">
+          <a href="https://storyset.com/online">
+            Online illustrations by Storyset
+          </a>
         </div>
       </div>
     </section>

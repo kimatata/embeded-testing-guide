@@ -24,7 +24,7 @@ sidebar_position: 2
 
 各LEDの状態を示す構造体`ST_LED_INFO`の配列をEEPROMに保存しているある組み込み製品があったとします。
 
-```c
+```c title="ledData.h"
 #define LED_COLOR_RED 0
 #define LED_COLOR_GREEN 1
 #define LED_COLOR_BLUE 2

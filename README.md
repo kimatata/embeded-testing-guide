@@ -31,7 +31,7 @@ npm run start
 if you want to start localized site in dev mode, please specify like below.
 
 ```bash
- npm run start -- --locale ja
+npm run start -- --locale ja
 ```
 
 ### Deploy to Github pages
