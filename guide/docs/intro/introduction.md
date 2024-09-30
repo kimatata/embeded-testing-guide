@@ -7,37 +7,47 @@ import anti from "./img/anti.png";
 
 # State of Embedded Software Development I Encountered
 
-I work for a manufacturer developing embedded software. Although I am not very experienced, the software development process in the projects I’ve been involved in was extremely outdated. There were no test codes at all, testing was done entirely manually, regression bugs frequently occurred, and delayed releases became the norm.
+I work in embedded software development for a certain manufacturer. While I don't have a wealth of experience, the software development process of the projects I've been involved in was significantly behind the times. There was no test code, all tests were done manually, regressions occurred frequently, and release delays had become routine.
 
-Why don’t we automate testing? When I asked my supervisors and colleagues, these were the answers I received:
+When I asked my superiors and colleagues why we weren’t automating tests, I received the following responses:
 
-- "We can’t do that because with embedded, we have to actually move things"
-- "Isn’t test code something for web development?"
-- "Embedded software runs on embedded devices, so emulating them is difficult."
-- "What’s test code?"
+- "With embedded systems, you can't know for sure unless you run it on the actual device."
+- "Isn't test code something for web development?"
+- "Embedded software runs on embedded devices, so emulating that is tough."
+- "What exactly is test code?"
 
-Overall, the sentiment was that automating tests was impossible. As a result, manual testing was seen as the only way forward.
+In short, they believed test automation was impossible, and that we had no choice but to stick to our current approach.
 
-I understand what they mean. In web app development, you have a unified environment like browsers, and there are excellent open-source tools like Selenium or Playwright. However, creating software to emulate each of the countless embedded devices used by different companies and projects is not feasible, except in fields like medical or space where a single bug can have catastrophic consequences.
+I understand their point. In web application development, we have standardized environments like browsers and excellent open-source tools like Selenium and Playwright. But creating software to emulate one of the countless unique embedded devices for each company or project might not be cost-effective (though in fields like medical or aerospace, where a single bug could cause catastrophic damage, it might be necessary).
 
-But that only applies to manual tests (E2E tests). There’s no reason why unit tests or integration tests can’t be automated. In teams with little knowledge or experience in testing seem to tend to think of test automation as automating manual tests (like the less testing-savvy people who are interested in implementing capture & replay tools).
+However, this only applies to manual testing (E2E testing). It’s no excuse for why unit tests or integration tests would be difficult. It felt like "embedded" was being used as an excuse to prematurely conclude that automation was impossible, without making an effort to gain sufficient knowledge about software testing, and sticking stubbornly to the current methods.
+
+## Types of Testing
+
+In my workplace, there is no such thing as unit testing; the only testing that occurs is system testing. All tests are performed manually, and bugs are mostly discovered at the final stages of development. In such a situation, even if I suggest test automation, they naturally only think of automating system tests. For example, in the web industry, capture-and-replay tools are often considered (especially by people unfamiliar with testing), but these tools merely replace manual testing and don’t lead to fundamental improvements in efficiency or quality.
 
 <img src={pyramid} alt="Test Pyramid" width="300" />[^1]
 
-Embedded software is also just a collection of logic, so unit tests should be possible. In fact, most bugs found during manual test or in the field were caused by logical errors, such as incorrect conditional branching. These are clearly not issues that manual testing should be responsible for catching.
+Since embedded software is essentially a collection of logic, many bugs should be easily caught through unit tests. In fact, most of the bugs caught during manual testing or those found in the market were caused by logic issues, such as mistakes in conditional branching. Clearly, these are not problems that should be found through manual testing.
 
-In other words, my workplace was trying to catch all bugs through manual testing at the final stages of development. This naturally resulted in extended evaluation times. In terms of the test pyramid, our process was worse than the "ice cream cone" anti-pattern, as we didn’t have any unit tests at all.
+In other words, my workplace was trying to catch all bugs through manual testing at the final stages of development. Naturally, this leads to delays in evaluation. When viewed in terms of the test pyramid, this approach goes beyond the well-known "ice cream cone" anti-pattern; it’s even worse—there wasn’t even a cone (since there were no unit tests).
 
 <img src={anti} alt="Anti-pattern" width="300" />[^1]
 
-To break free from this situation and improve quality by reducing manual testing workload and finding bugs earlier, I explained to my team that we needed to introduce unit tests into embedded software development. The reactions were mixed:
+To address this inefficient testing structure, reduce the workload of manual testing, and improve quality through early bug detection, I communicated to my team the need for introducing unit tests in embedded software development.
 
-- Some didn’t quite understand the importance of testing.
-- Some thought it seemed great but didn’t know how to implement it.
-- Some said they were too busy with the current project to learn something new.
+## Team's Response
 
-So, my efforts to get unit testing established in the team are still ongoing. Of course, I have introduced unit tests and are running CI in the products I work on. I plan to continue promoting the benefits of testing by sharing the results with the team.
+The team’s responses were mixed:
 
-This guide is a slightly modified version of the materials I used to explain unit test adoption to my team. I hope this will be helpful for those who understand the importance of testing but don’t know how to introduce unit tests into embedded development.
+- Some didn’t really understand the concept of testing.
+- Some thought it seemed impressive but didn’t know how to implement it.
+- Others felt too busy with current projects to learn something new.
+
+However, some members became interested in unit testing and have started adopting it. In fact, by introducing unit tests and CI into the product I’m responsible for, we’ve managed to shift bug detection from the system testing phase before release to the implementation phase. With the help of coverage reports, verifying whether we’ve fully covered branching conditions has become easier, allowing us to quantify test quality. Introducing these results has also sparked interest from other members.
+
+That said, the effort to establish testing practices within the embedded software development team is still ongoing. We plan to continue demonstrating the benefits of unit test adoption and raising awareness of the importance of testing.
+
+This guide is an adapted version of the materials I used to explain the method of introducing unit tests to my team. I hope it serves as a helpful reference for those who understand the importance of testing but are unsure how to implement unit tests in embedded software development.
 
 [^1]: [Software Engineering at Google Chapter 11: Testing Overview](https://abseil.io/resources/swe-book/html/ch11.html)
