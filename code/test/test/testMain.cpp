@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "./testLed.cpp"
+#include "./testLedCtrl.cpp"
 #include "./testFileManager.cpp"
 
 int main(int argc, char **argv)
