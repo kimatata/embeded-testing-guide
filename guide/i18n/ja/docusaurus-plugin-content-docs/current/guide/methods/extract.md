@@ -74,14 +74,14 @@ int8_t LedData_GetBrightestBlueLedNo(ST_LED_INFO* pList) {
 
     // find brightest blue led
     // highlight-next-line
-    int8_t ret = LedDataImpl_GetBrightestBlueLedNo(ledInfoRecords, LED_INFO_NUM);
+    int8_t ret = LedImpl_GetBrightestBlueLedNo(ledInfoRecords, LED_INFO_NUM);
 
     return ret;
 }
 ```
 
 ```c title="ledDataImpl.c"
-int8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {
+int8_t LedImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {
     int8_t brightestLedNo = -1;
     uint8_t maxBrightness = 0;
     for (uint8_t i = 0; i < size; i++) {
