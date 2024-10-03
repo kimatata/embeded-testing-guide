@@ -1,7 +1,6 @@
 # Create the double library
 add_library(double SHARED
   board.c
-  fileCtrl.c
   led.c
 )
 
