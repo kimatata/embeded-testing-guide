@@ -4,5 +4,8 @@
 **/cmake_install.cmake
 **/Makefile
 
+# Ignore library build
+test/test/build/
+
 # Ignore test executable
 test/test/runTests

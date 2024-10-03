@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include "ledData.h"
 
-uint8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size);
+int8_t LedDataImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size);
 
 #endif /* LED_CTRL_IMPLE_H */

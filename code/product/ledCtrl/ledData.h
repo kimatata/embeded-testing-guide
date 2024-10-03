@@ -10,8 +10,8 @@
 #define LED_COLOR_BLUE 2
 
 typedef struct {
-    uint8_t isUsed : 1;
-    uint8_t brightness : 7;
+    uint8_t isUsed;
+    uint8_t brightness;
     uint8_t color;
     uint8_t ledNo;
 } ST_LED_INFO;
