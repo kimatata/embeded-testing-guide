@@ -14,12 +14,11 @@ sidebar_position: 1
 
 テスト対象のコードが返す値が期待値と同じかどうか検証します。一番シンプルで書きやすいですが、テスト対象のコードが副作用がないことが前提です。
 
-
 ```c title="出力値ベーステスト"
-TEST(calcElapsedFreeCount, オーバーフローしても正しく経過時間を計算できる) {
-    uint32_t startCount = 0xffffffff;
-    uint32_t currentCount = 0x9;
-    EXPECT_EQ(10, TrpSensing_calcElapsedFreeCount(startCount, currentCount));
+TEST(Counter, オーバーフローしても正しく経過カウントを計算できる) {
+    uint32_t startValue = 0xffffffff;
+    uint32_t currentValue = 0x9;
+    EXPECT_EQ(10, Counter_GetElapsedCount(startValue, currentValue));
 }
 ```
 
@@ -31,45 +30,86 @@ TEST(calcElapsedFreeCount, オーバーフローしても正しく経過時間�
 #ifndef COUNTER_H
 #define COUNTER_H
 
+#include "../board/board.h"
+
 typedef struct {
-    int value;
+    uint32_t value;
+    uint32_t overflowCount;
 } Counter;
 
-void initCounter(Counter* counter);
-void incrementCounter(Counter* counter);
-int getCounterValue(Counter* counter);
+void Counter_Init(Counter *counter);
+void Counter_Update(Counter *counter);
+uint32_t Counter_GetValue(Counter *counter);
+uint32_t Counter_GetOverflowCount(Counter *counter);
+void Counter_Reset(Counter *counter);
+uint32_t Counter_GetElapsedCount(uint32_t startValue, uint32_t currentValue);
 
 #endif // COUNTER_H
+
 ```
 
 ```c title="プロダクトコード couter.c"
 #include "counter.h"
 
-void initCounter(Counter* counter) {
+void Counter_Init(Counter *counter) {
     counter->value = 0;
+    counter->overflowCount = 0;
 }
 
-void incrementCounter(Counter* counter) {
+void Counter_Update(Counter *counter) {
     counter->value++;
+
+    // オーバーフローしたとき
+    if (counter->value == 0) {
+        counter->overflowCount++;
+    }
 }
 
-int getCounterValue(Counter* counter) {
-    return counter->value;
+void Counter_Reset(Counter *counter) {
+    counter->value = 0;
+    counter->overflowCount = 0;
+}
+
+uint32_t Counter_GetValue(Counter *counter) { return counter->value; }
+
+uint32_t Counter_GetOverflowCount(Counter *counter) {
+    return counter->overflowCount;
+}
+
+uint32_t Counter_GetElapsedCount(uint32_t startValue, uint32_t currentValue) {
+    return currentValue - startValue;
 }
 ```
 
 ```c title="テストコード testCounter.c"
-TEST(CounterTest, カウンターの初期値は0) {
+TEST(Counter, カウンターが初期化されること) {
     Counter counter;
-    initCounter(&counter);
-    EXPECT_EQ(getCounterValue(&counter), 0);
+    Counter_Init(&counter);
+    EXPECT_EQ(Counter_GetValue(&counter), 0);
+    EXPECT_EQ(Counter_GetOverflowCount(&counter), 0);
 }
 
-TEST(CounterTest, カウンター値が増える) {
+TEST(Counter, カウンター値が増えること) {
     Counter counter;
-    initCounter(&counter);
-    incrementCounter(&counter);
-    EXPECT_EQ(getCounterValue(&counter), 1);
+    Counter_Init(&counter);
+    Counter_Update(&counter);
+    EXPECT_EQ(Counter_GetValue(&counter), 1);
+}
+
+TEST(Counter, オーバーフローカウントが増えること) {
+    Counter counter;
+    Counter_Init(&counter);
+
+    counter.value = UINT32_MAX - 1;
+    Counter_Update(&counter);
+    EXPECT_EQ(Counter_GetValue(&counter), UINT32_MAX);
+    EXPECT_EQ(Counter_GetOverflowCount(&counter), 0);
+
+    // オーバーフローさせる
+    Counter_Update(&counter);
+    EXPECT_EQ(Counter_GetValue(&counter), 0);
+    EXPECT_EQ(Counter_GetOverflowCount(&counter),
+              1); // オーバーフローカウントが1になる
 }
 ```
 

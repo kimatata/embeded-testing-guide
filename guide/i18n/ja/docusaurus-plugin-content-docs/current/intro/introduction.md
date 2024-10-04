@@ -2,8 +2,8 @@
 sidebar_position: 1
 ---
 
-import pyramid from "./img/pyramid.png";
-import anti from "./img/anti.png";
+import pyramid from "../../../../../docs/intro/img/pyramid.png";
+import anti from "../../../../../docs/intro/img/anti.png";
 
 # 組み込みソフトウェア開発の現状
 

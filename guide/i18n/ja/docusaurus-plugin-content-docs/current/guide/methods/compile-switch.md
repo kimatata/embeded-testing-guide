@@ -7,37 +7,31 @@ sidebar_position: 3
 プロダクトコードでマイコンやハードウェアに依存している箇所をコンパイルスイッチで分岐させ、それぞれの環境で使える関数を呼び出すようにする方法です。
 テストのためにプロダクトコードに変更を加えており、プロダクトコードが複雑になってしまうためこの方法は避けたほうが良いです。
 
-```c title="プロダクトコード led.c"
+```c title="プロダクトコード ledCtrl.c"
 #include ledCtrl.h
 
-void turnOnRedLED(void) {
+static void turnOnRedLED(void) {
 #if REAL_BOARD
-    LedCtrl_LedON(3);
+    Led_ON(3);
 #else
-    VirtualLedCtrl_LedON(3);
+    Virtual_Led_ON(3);
 #endif
 }
 ```
 
-```c title="プロダクトコード用のledCtrl.c"
+```c title="プロダクトコード用のled.c"
 static uint8_t led_value;
+static volatile uint8_t *ledResisterAdr;
 
-// set registerレジスタに値をセット
-void LedCtrl_LedON(uint8_t ledNo) {
-    led_value = led_value | (1 << n);
-    LED_RESISTER = led_value;
+// レジスタに値をセット
+void Led_ON(uint8_t ledNo) {
+    led_value = led_value | (1 << ledNo);
+    *ledResisterAdr = led_value;
 }
 ```
 
-```c title="テストコード用の ledCtrl.c"
-static uint8_t led_value;
-
-void VirtualLedCtrl_LedON(uint8_t ledNo) {
-    led_value = led_value | (1 << n);
-}
-
-// led_valueをテストコードから呼び出して結果を確認できるようにする
-uint8_t void VirtualLedCtrl_GetLedValue(void) {
-    return led_value;
+```c title="テストコード用の led.c"
+void Virtual_Led_ON(uint8_t ledNo) {
+    printf("virtual led%d turned ON\n", ledNo);
 }
 ```

@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-import breakEven from "./img/breakeven.jpg";
-import shiftLeft from "./img/shiftLeft.png";
-import gTest from "./img/gTest.jpg";
+import breakEven from "../../../../../docs/intro/img/breakeven.jpg";
+import shiftLeft from "../../../../../docs/intro/img/shiftLeft.png";
+import gTest from "../../../../../docs/intro/img/gTest.png";
 
 # 単体テスト導入のメリット
 
@@ -50,10 +50,10 @@ googletestのテストケース実行用マクロ`TEST`は引数にテストケ�
 
 ```c
 // highlight-next-line
-TEST(freeCount, オーバーフローしても正しく経過時間を計算できる) {
-  uint32_t startCount = 0xffffffff;
-  uint32_t currentCount = 0x9;
-  EXPECT_EQ(10, CalcElapsedFreeCount(startCount, currentCount));
+TEST(Counter, オーバーフローしても正しく経過カウントを計算できる) {
+    uint32_t startValue = 0xffffffff;
+    uint32_t currentValue = 0x9;
+    EXPECT_EQ(10, Counter_GetElapsedCount(startValue, currentValue));
 }
 ```
 

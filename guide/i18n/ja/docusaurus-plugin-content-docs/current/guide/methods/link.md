@@ -6,44 +6,77 @@ sidebar_position: 4
 
 ビルド時にプロダクトコードの代わりにテスト用のコードをリンクさせる方法。プロダクトコードが汚れず、簡単なのでできるだけこの方法を採用するのが良いです。
 
-例：基板上でしか動作しない`LedCtrl_LedON()`が含まれたプロダクトコードをテストしたい場合
+例：基板上でしか動作しない`Led_ON()`, `Led_OFF()`が含まれたプロダクトコードをテストしたい場合
 
-```c title="プロダクトコード"
+```c title="プロダクトコード ledCtrl.c"
 #include "ledCtrl.h"
 
-void turnOnRedLED(void) {
-    LedCtrl_LedON(3);
+static ST_LED_INFO ledInfoRecords[LED_INFO_NUM];
+
+void LedCtrl_TurnOnRedLedsOnly(void) {
+    // Turn off all LEDs
+    for (uint8_t i = 0; i < LED_INFO_NUM; i++) {
+        if (ledInfoRecords[i].isOn == 1) {
+            Led_OFF(ledInfoRecords[i].ledNo);
+            ledInfoRecords[i].isOn = 0;
+        }
+    }
+
+    // Turn on red LEDs
+    for (uint8_t i = 0; i < LED_INFO_NUM; i++) {
+        if (ledInfoRecords[i].color == LED_COLOR_RED) {
+            Led_ON(ledInfoRecords[i].ledNo);
+            ledInfoRecords[i].isOn = 1;
+        }
+    }
 }
 ```
 
-```c title="プロダクトコード ledCtrl.c"
+```c title="プロダクトコード led.c"
 static uint8_t led_value;
+static volatile uint8_t *ledResisterAdr;
 
-// set registerレジスタに値をセット
-void LedCtrl_LedON(uint8_t ledNo) {
-    led_value = led_value | (1 << n);
-    LED_RESISTER = led_value;
+void Led_ON(uint8_t ledNo) {
+    led_value = led_value | (1 << ledNo);
+    *ledResisterAdr = led_value;
+}
+
+void Led_OFF(uint8_t ledNo) {
+    led_value = led_value & ~(1 << ledNo);
+    *ledResisterAdr = led_value;
 }
 ```
 
 ビルドを通したいだけならダミーの実装が書かれたファイルをビルド時にリンクします。
 
-```c title="テストダブル（ダミー）ledCtrl.c"
-void LedCtrl_LedON(uint8_t ledNo) {
-    // do nothing
+```c title="テストダブル（ダミー）led.c"
+void Led_ON(uint8_t ledNo) {
+    // dummy
+}
+
+void Led_OFF(uint8_t ledNo) {
+    // dummy
 }
 ```
 
-ダミーではなくスパイを使うことでLED3がONになったことを確かめるテストを書くこともできます。
+ダミーではなくスパイを使うことであるLEDがたしかにONされたことを確かめるテストを書くこともできます。
 
-```c title="テストダブル（スパイ）ledCtrl.c"
+```c title="テストダブル（スパイ）led.c"
 static uint8_t led_value;
 
-void LedCtrl_LedON(uint8_t ledNo) {
-    led_value = led_value | (1 << n);
+void Led_ON(uint8_t ledNo) {
+    led_value = led_value | (1 << ledNo);
 }
 
-uint8_t LedCtrl_GetLedValue(){
-    return led_value;
+void Led_OFF(uint8_t ledNo) {
+    led_value = led_value & ~(1 << ledNo);
+}
+
+uint8_t Led_IsOn(uint8_t ledNo) {
+    if (led_value & (1 << ledNo)) {
+        return 1; // ON
+    } else {
+        return 0; // OFF
+    }
 }
 ```

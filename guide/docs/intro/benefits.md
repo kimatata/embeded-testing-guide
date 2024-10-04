@@ -4,7 +4,7 @@ sidebar_position: 2
 
 import breakEven from "./img/breakeven.jpg";
 import shiftLeft from "./img/shiftLeft.png";
-import gTest from "./img/gTest.jpg";
+import gTest from "./img/gTest.png";
 
 # Benefits of Introducing Unit Tests
 
@@ -50,10 +50,10 @@ Google Test’s `TEST` macro accepts arguments for the test case name, allowing 
 
 ```c
 // highlight-next-line
-TEST(freeCount, CanCalculateElapsedTimeCorrectlyEvenWithOverflow) {
-  uint32_t startCount = 0xffffffff;
-  uint32_t currentCount = 0x9;
-  EXPECT_EQ(10, CalcElapsedFreeCount(startCount, currentCount));
+TEST(Counter, CanCalculateElapsedTimeCorrectlyEvenWithOverflow) {
+    uint32_t startValue = 0xffffffff;
+    uint32_t currentValue = 0x9;
+    EXPECT_EQ(10, Counter_GetElapsedCount(startValue, currentValue));
 }
 ```
 

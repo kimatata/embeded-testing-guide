@@ -14,7 +14,7 @@ void Led_OFF(uint8_t ledNo) {
     *ledResisterAdr = led_value;
 }
 
-uint8_t Led_isOn(uint8_t ledNo) {
+uint8_t Led_IsOn(uint8_t ledNo) {
     if (led_value & (1 << ledNo)) {
         return 1; // ON
     } else {
