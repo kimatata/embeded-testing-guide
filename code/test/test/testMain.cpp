@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 
+#include "./testCounter.cpp"
 #include "./testFileManager.cpp"
 #include "./testLedCtrl.cpp"
 #include "./testLedImpl.cpp"
