@@ -7,3 +7,5 @@ BraceWrapping:
   BeforeElse: false
   BeforeCatch: false
 IndentWidth: 4
+AllowShortFunctionsOnASingleLine: false
+ColumnLimit: 120

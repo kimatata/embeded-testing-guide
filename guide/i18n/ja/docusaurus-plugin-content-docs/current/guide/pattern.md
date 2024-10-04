@@ -70,7 +70,9 @@ void Counter_Reset(Counter *counter) {
     counter->overflowCount = 0;
 }
 
-uint32_t Counter_GetValue(Counter *counter) { return counter->value; }
+uint32_t Counter_GetValue(Counter *counter) {
+    return counter->value;
+}
 
 uint32_t Counter_GetOverflowCount(Counter *counter) {
     return counter->overflowCount;
@@ -108,8 +110,7 @@ TEST(Counter, オーバーフローカウントが増えること) {
     // オーバーフローさせる
     Counter_Update(&counter);
     EXPECT_EQ(Counter_GetValue(&counter), 0);
-    EXPECT_EQ(Counter_GetOverflowCount(&counter),
-              1); // オーバーフローカウントが1になる
+    EXPECT_EQ(Counter_GetOverflowCount(&counter), 1); // オーバーフローカウントが1になる
 }
 ```
 

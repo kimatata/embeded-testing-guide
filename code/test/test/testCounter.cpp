@@ -30,8 +30,7 @@ TEST(Counter, CounterOverflows) {
     // trigger overflow
     Counter_Update(&counter);
     EXPECT_EQ(Counter_GetValue(&counter), 0);
-    EXPECT_EQ(Counter_GetOverflowCount(&counter),
-              1); // overflow count will be 1
+    EXPECT_EQ(Counter_GetOverflowCount(&counter), 1); // overflow count will be 1
 }
 
 TEST(Counter, CounterResetsProperly) {
