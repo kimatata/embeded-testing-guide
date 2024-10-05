@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Installing Google Test
 
-GoogleTest, a unit testing tool for C (and C++), runs on Linux. If you're not sure how to set up Linux on Windows, refer to the [WSL2 setup guide](./wsl.md).
+I will show you how to run Google Test on Linux. If you're not sure how to set up Linux on Windows, refer to the [WSL2 setup guide](./wsl.md).
 
 First, install the necessary packages.
 

@@ -16,6 +16,8 @@ Run the following command in PowerShell with administrator privileges. After a w
 wsl --install
 ```
 
+Please check the [microsoft's official page](https://learn.microsoft.com/en-us/windows/wsl/install) for details.
+
 ## Ubuntu
 
 After restarting, WSL2 will be installed, and Ubuntu will automatically be installed as well. Set your username and password in the Ubuntu setup screen.

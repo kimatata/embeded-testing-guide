@@ -80,8 +80,8 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} embeded-testing-guide. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: prismThemes.nightOwl,
+      darkTheme: prismThemes.nightOwl,
     },
   } satisfies Preset.ThemeConfig,
 };
