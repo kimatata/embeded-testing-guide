@@ -20,6 +20,6 @@ In fact, [CUnit](https://cunit.sourceforge.net/) is a test framework for C, but 
 
 :::
 
-In my project, I adopted Google Test, especially because it offers strong support for mocks. All the test code in this guide is written using Google Test. I’ve also included a guide on how to install Google Test, so if you’re interested in using it, please check it out: [How to Install Google Test](../environment/googletest.md).
+In my project, I adopted Google Test, especially because it offers strong support for mocks. All the test code in this guide is written using Google Test. I’ve also included a guide on how to install Google Test, so if you’re interested in using it, please check it out: [How to Install Google Test](../setup/googletest.md).
 
 However, this guide focuses more on the methodology of introducing unit tests into embedded software development rather than on how to use specific test frameworks. The principles shared in this guide are consistent regardless of which test framework is used, so I believe this will be useful even for projects that don’t use Google Test.

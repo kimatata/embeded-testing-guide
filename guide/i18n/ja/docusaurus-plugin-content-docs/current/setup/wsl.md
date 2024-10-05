@@ -16,6 +16,8 @@ import wsl2 from "./img/wsl2.png";
 wsl --install
 ```
 
+詳しくは[Microsoftの公式ページ](https://learn.microsoft.com/en-us/windows/wsl/install)をご確認ください。
+
 ## Ubuntu
 
 再起動するとwsl2のインストールが完了し、自動でUbuntuがインストールされます。Ubuntuの画面で適当にuser名とパスワードを設定します。
