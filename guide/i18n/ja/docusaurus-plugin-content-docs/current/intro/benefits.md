@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-import breakEven from "../../../../../docs/intro/img/breakeven.jpg";
-import shiftLeft from "../../../../../docs/intro/img/shiftLeft.png";
-import gTest from "../../../../../docs/intro/img/gTest.png";
+import breakEven from "./img/breakeven.jpg";
+import shiftLeft from "./img/shiftLeft.png";
+import gTest from "./img/gTest.png";
 
 # 単体テスト導入のメリット
 

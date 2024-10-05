@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-import exec from "../../../../../docs/environment/img/exec.png";
-import coverage from "../../../../../docs/environment/img/coverage.png";
-import coverageDetail from "../../../../../docs/environment/img/coverageDetail.png";
+import exec from "./img/exec.png";
+import coverage from "./img/coverage.png";
+import coverageDetail from "./img/coverageDetail.png";
 
 # テスト実行用スクリプト
 
