@@ -7,9 +7,7 @@ static ST_LED_INFO eepromLedInfoRecords[LED_INFO_NUM];
 
 int8_t LedCtrl_GetBrightestBlueLedNo(ST_LED_INFO *pList) {
     // read data from ROM to RAM
-    eepromReadBlock((void *)&ledInfoRecords[0],
-                    (const void *)eepromLedInfoRecords,
-                    LED_INFO_NUM * sizeof(ST_LED_INFO));
+    eepromReadBlock((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
     // find brightest blue led
     int8_t ret = LedImpl_GetBrightestBlueLedNo(ledInfoRecords, LED_INFO_NUM);
@@ -35,5 +33,9 @@ void LedCtrl_TurnOnRedLedsOnly(void) {
     }
 }
 
-ST_LED_INFO *LedCtrl_GetCurrentLedState(void) { return ledInfoRecords; }
-uint8_t LedCtrl_GetLedNum(void) { return LED_INFO_NUM; }
+ST_LED_INFO *LedCtrl_GetCurrentLedState(void) {
+    return ledInfoRecords;
+}
+uint8_t LedCtrl_GetLedNum(void) {
+    return LED_INFO_NUM;
+}

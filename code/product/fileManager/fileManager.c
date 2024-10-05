@@ -1,8 +1,7 @@
 #include "fileManager.h"
 #include "fileCtrl.h"
 
-int8_t FileManager_CreateLogFile(uint32_t *headerSrc, uint32_t headerSize,
-                                 uint32_t *payloadSrc, uint32_t payloadSize) {
+int8_t FileManager_CreateLogFile(uint32_t *headerSrc, uint32_t headerSize, uint32_t *payloadSrc, uint32_t payloadSize) {
     // first create file
     ST_QUEUE_ELEMENT openFileEl = {
         OPEN_LOG_FILE, // id
@@ -47,8 +46,7 @@ int8_t FileManager_OpenLogFile(void) {
     // ..
 }
 
-int8_t FileManager_WriteLogHeader(uint32_t *src, uint32_t size,
-                                  uint32_t offset) {
+int8_t FileManager_WriteLogHeader(uint32_t *src, uint32_t size, uint32_t offset) {
     ST_QUEUE_ELEMENT el = {
         WRITE_LOG_HEADER, // id
         src,              // src
@@ -60,8 +58,7 @@ int8_t FileManager_WriteLogHeader(uint32_t *src, uint32_t size,
     return 0;
 }
 
-int8_t FileManager_WriteLogPayload(uint32_t *src, uint32_t size,
-                                   uint32_t offset) {
+int8_t FileManager_WriteLogPayload(uint32_t *src, uint32_t size, uint32_t offset) {
     // resister queue to write file payload
     // ..
 }

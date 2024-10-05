@@ -4,97 +4,105 @@ sidebar_position: 2
 
 # テストコードのビルド
 
-CMakeによりビルドする
+CMakeによりビルドする。例として本レポジトリのサンプルコードをビルドする`CMakeLists.txt`を紹介します。プロジェクトのディレクトリ構造に従って修正が必要です。
 
-例として本レポジトリのサンプルコードをビルドする`CMakeLists.txt`を紹介する。プロジェクトのディレクトリ構造に従って修正が必要となる。
+- `product`ディレクトリ配下にプロダクトコードを配置しています。
+- `test`には`double`ディレクトリと`test`ディレクトリが含まれます。
+  - `test/double`にはテスト実行時にマイコン上でのみ動作するコード置き換えるためのダブルのコードを配置しています。
+  - `test/test`にはテストコードを配置しています。
 
 ## ディレクトリ構造
 
-```markdown
-`code`
-├─ `product`
-|    ├─ `led`
-|    └─ `fileManger`
-├─ `test`
-|    ├─ `test`
-|    |     ├─ `testled.cpp`
-|    |     └─ `testFileManager.cpp`
-|    └─ `double`
-└─ `CMakeLists.txt`
+```markdown title="サンプルコードの構成"
+code
+  ├─ product
+  |   ├─ ..
+  |   └─ ledCtrl
+  |        ├─ led.c
+  |        ├─ led.h
+  |        ├─ ledCtrl.c
+  |        ├─ ledCtrl.h
+  |        └─ CMakeLists.txt
+  └─ test
+      ├─ double
+      |    ├─ ..
+      |    ├─ led.c
+      |    ├─ led.h
+      |    └─ CMakeLists.txt
+      └─ test
+           ├─ testLedCtrl.cpp
+           ├─ ..
+           ├─ testMain.cpp
+           └─ CMakeLists.txt
 ```
 
-## CMakeLists.txt
+### ダブルライブラリ生成用CMakeLists.txt
 
-### プロジェクト
+テストスイート実行時にマイコン上でのみ動作するコードをダブルで置き換える必要があります。
+`code/test/double/CMakeLists.txt`はダブルのコードをビルドし、ダブルライブラリを生成するために必要です。
 
-サブディレクトリのCMakeLists.txtを登録
+```cmake title="code/test/test/CMakeLists.txt"
+# Create the double library
+add_library(double SHARED
+  board.c
+  led.c
+)
 
-```CMakeLists.txt title="./CMakeLists.txt"
-cmake_minimum_required(VERSION 3.13)
-project(test_suite)
-
-# サブディレクトリを登録
-add_subdirectory(product)
-add_subdirectory(test/test)
+target_include_directories(double PUBLIC ${PROJECT_SOURCE_DIR}/test/double)
 ```
 
-### テストコード
+### プロダクトコードledCtrlライブラリ生成用CMakeLists.txt
 
-```CMakeLists.txt title="test/test/CMakeLists.txt"
-# GTestの配置
+テスト対象となるプロダクトコードをビルドし、ライブラリ化します。
+`include_directories(../test/double)`によってダブルライブラリを読み込むことで依存関係を解消しています。
+
+```cmake title="code/product/ledCtrl/CMakeLists.txt"
+# Define environment variables
+add_definitions(-DTEST_ENV)
+
+# Include double for resolving dependencies
+include_directories(../test/double)
+
+# Create the ledCtrl library
+add_library(ledCtrl SHARED
+  ledCtrl.c
+  ledImpl.c
+)
+
+target_include_directories(ledCtrl PUBLIC ${PROJECT_SOURCE_DIR}/product/led)
+target_link_libraries(ledCtrl double)
+```
+
+### テスト実行ファイル生成用CMakeLists.txt
+
+`code/test/test/CMakeLists.txt`はテスト実行ファイルをビルドするためのファイルです。
+ビルドが成功するとテスト実行ファイルが生成されます。
+
+```cmake title="code/test/test/CMakeLists.txt"
+cmake_minimum_required(VERSION 3.14)
+project(embeded-testing-guide
+    DESCRIPTION "google test for embeded code"
+    HOMEPAGE_URL "https://github.com/kimatata/embeded-testing-guide"
+)
+
+# Coverage flags for GCC/Clang
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+
+# Locate GTest (includes Google Mock as well)
 find_package(GTest REQUIRED)
+
 include_directories(${GTEST_INCLUDE_DIRS})
 
-# 実行ファイル作成
-add_executable(runTestSuite testled.cpp testFileManager.cpp)
+# Add the ledCtrl library directory
+add_subdirectory(../double/ build/double)
+add_subdirectory(../../product/armCtrl build/armCtrl)
+add_subdirectory(../../product/counter build/counter)
+add_subdirectory(../../product/fileManager build/fileManager)
+add_subdirectory(../../product/ledCtrl build/ledCtrl)
 
-# runTestSuiteをコンパイルする際に必要なライブラリをリンク
-target_link_libraries(runTestSuite ${GTEST_LIBRARIES} pthread led fileManger doubles)
-```
-
-### ダブル
-
-```CMakeLists.txt title="Test/double/CMakeLists.txt"
-# doublesライブラリ作成
-add_library(doubles SHARED
-    ledCtrl.c
-    fileCtrl.c
-)
-
-target_include_directories(doubles PUBLIC ${PROJECT_SOURCE_DIR}/test/double)
-```
-
-### テスト対象コード
-
-テスト対象コードが増えるたびに各フォルダ配下に`CmakeLists.txt`を追加します。
-
-```CMakeLists.txt title="led/CMakeLists.txt"
-# 環境変数
-add_definitions(-DTEST_ENV)
-
-# 依存関係解消用のダブルを読み込み
-include_directories(../Test/double)
-
-# ledライブラリ作成
-add_library(led SHARED
-  src/led/ledCtrl.c
-  src/led/ledImple.c
-)
-
-target_include_directories(led PUBLIC ${PROJECT_SOURCE_DIR}/led)
-```
-
-```CMakeLists.txt title="fileManager/CMakeLists.txt"
-# 環境変数
-add_definitions(-DTEST_ENV)
-
-# 依存関係解消用のダブルを読み込み
-include_directories(../Test/double)
-
-# fileManagerライブラリ作成
-add_library(fileManager SHARED
-  src/fileManager/fileCtrl.c
-)
-
-target_include_directories(fileManager PUBLIC ${PROJECT_SOURCE_DIR}/fileManager)
+# Link runTests with what we want to test and the GTest and pthread library
+add_executable(runTests testMain.cpp)
+target_link_libraries(runTests ${GTEST_LIBRARIES} gmock gmock_main pthread double armCtrl counter fileManager ledCtrl)
 ```

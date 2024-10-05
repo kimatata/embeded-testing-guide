@@ -55,9 +55,7 @@ There is a function that reads this data from EEPROM into RAM and retrieves the 
 ```c title="ledCtrl.c"
 int8_t LedCtrl_GetBrightestBlueLedNo(ST_LED_INFO *pList) {
     // read data from ROM to RAM
-    eepromReadBlock((void *)&ledInfoRecords[0],
-                    (const void *)eepromLedInfoRecords,
-                    LED_INFO_NUM * sizeof(ST_LED_INFO));
+    eepromReadBlock((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
     // find brightest blue led
     int8_t brightestLedNo = -1;
@@ -84,9 +82,7 @@ In the previous example, platform-specific functions prevented the code from bei
 ```c title="ledCtrl.c"
 int8_t LedCtrl_GetBrightestBlueLedNo(ST_LED_INFO *pList) {
     // read data from ROM to RAM
-    eepromReadBlock((void *)&ledInfoRecords[0],
-                    (const void *)eepromLedInfoRecords,
-                    LED_INFO_NUM * sizeof(ST_LED_INFO));
+    eepromReadBlock((void *)&ledInfoRecords[0], (const void *)eepromLedInfoRecords, LED_INFO_NUM * sizeof(ST_LED_INFO));
 
     // find brightest blue led
     // highlight-next-line
@@ -97,8 +93,7 @@ int8_t LedCtrl_GetBrightestBlueLedNo(ST_LED_INFO *pList) {
 ```
 
 ```c title="ledImpl.c"
-int8_t LedImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[],
-                                     uint8_t size) {
+int8_t LedImpl_GetBrightestBlueLedNo(ST_LED_INFO ledInfoRecords[], uint8_t size) {
     int8_t brightestLedNo = -1;
     uint8_t maxBrightness = 0;
     for (uint8_t i = 0; i < size; i++) {
