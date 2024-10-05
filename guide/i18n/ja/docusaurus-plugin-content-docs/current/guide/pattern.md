@@ -121,4 +121,4 @@ TEST(Counter, オーバーフローカウントが増えること) {
 テスト対象コードが別の関数やAPIを正しく呼び出すことを確認します。呼び出し先をモックやスパイに置き換えることで検証を行います。
 実装は複雑になり、テストコードも長くなります。
 
-![./img/communicationTest.svg](../../../../../docs/guide/img/communicationTest.svg)
+![./img/communicationTest.svg](./img/communicationTest.svg)
