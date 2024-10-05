@@ -18,13 +18,5 @@
   "sidebar.tutorialSidebar.category.Setup": {
     "message": "セットアップ",
     "description": "The label for category Setup in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.Best Practices": {
-    "message": "ベストプラクティス",
-    "description": "The label for category Best Practices in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.Reference": {
-    "message": "参考文献",
-    "description": "The label for category Reference in sidebar tutorialSidebar"
   }
 }
