@@ -2,17 +2,19 @@
 
 Introduction Guide to Embedded Software Unit Testing using google test
 
-This guide is a slightly modified version of the material I used to introduce unit testing to my embedded development team. I hope it will be helpful to those who understand the importance of testing but don't know how to introduce unit testing to their embedded development.
+This guide is a slightly modified version of the material I used to introduce unit testing to my embedded development team.
 
-## Guide
-
-Please visit the following site:
+Please visit guide page.
 
 [https://kimatata.github.io/embeded-testing-guide/](https://kimatata.github.io/embeded-testing-guide/)
 
+![Embeded testing guide image](hero.png)
+
 ## Sample Code
 
-TODO
+The code under the code directory is the sample Google test code used in the guide. You can run test suites, and generate coverage report.
+
+![Google test execute image](./guide/docs/setup/img/exec.png)
 
 <hr />
 
