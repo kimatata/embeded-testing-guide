@@ -14,6 +14,8 @@ In general, test code checks expected values using the following three patterns:
 
 This method verifies whether the value returned by the code under test matches the expected value. It is the simplest and easiest to write but assumes that the code under test has no side effects.
 
+![Output-based Testing](./img/output-based.svg)
+
 ```c title="Output-based Testing"
 TEST(Counter, CanCalculateElapsedTimeCorrectlyEvenWithOverflow) {
     uint32_t startValue = 0xffffffff;
@@ -25,6 +27,8 @@ TEST(Counter, CanCalculateElapsedTimeCorrectlyEvenWithOverflow) {
 ## State-based Testing
 
 This method checks the state (member variables) after the code under test is executed. It is slightly more complex compared to output-based testing. In C language, it looks like this:
+
+![State-based Testing](./img/state-based.svg)
 
 ```c title="production code couter.h"
 #ifndef COUNTER_H
@@ -120,4 +124,4 @@ In object-oriented programming, this would be like checking the value of a class
 
 This method verifies that the code under test correctly calls other functions or APIs. Verify the component being called by replacing it with a mock or spy. The implementation becomes more complex and the test code longer.
 
-![./img/communicationTest.svg](./img/communicationTest.svg)
+![Communication-based Testing](./img/communication-based.svg)
