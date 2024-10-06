@@ -40,9 +40,9 @@ const FeatureList: FeatureItem[] = [
       <>
         I will show a sample test code using Google Test. However, this guide
         focuses more on the methodology of introducing unit tests into embedded
-        software development rather than on how to use specific test frameworks.
+        software development rather than on how to use specific testing frameworks.
         The principles shared in this guide are consistent regardless of which
-        test framework you use.
+        testing framework you use.
       </>
     ),
   },

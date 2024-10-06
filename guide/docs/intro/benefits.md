@@ -3,7 +3,7 @@ sidebar_position: 2
 ---
 
 import breakEven from "./img/breakeven.jpg";
-import shiftLeft from "./img/shiftLeft.png";
+import shiftLeft from "./img/shift-left.png";
 import gTest from "./img/gTest.png";
 
 # Benefits of Introducing Unit Tests
@@ -14,9 +14,9 @@ This chapter explains the general benefits of introducing unit tests. If you are
 
 ### Reducing Workload
 
-Some people may think that the workload increases because you have to write code for testing in addition to the product code. Certainly, in the early stages of development, progress may seem faster if tests are not written. However, once a project reaches a certain scale, introducing unit tests results in lower total costs.
+Some people may think that the workload increases because you have to write test code in addition to the product code. Certainly, in the early stages of development, progress may seem faster if tests are not written. However, once a project reaches a certain scale, introducing unit tests results in lower total costs.
 
-<img src={breakEven} alt="Break-even Point" width="700" />
+<img src={breakEven} alt="Break-even Point" width="700" /> [^1]
 
 Unit tests, which have short execution times and provide immediate feedback, are less affected by specification changes compared to integration or manual (E2E) tests. Even for small projects, unit tests can be worthwhile. Unless you’re working with disposable scripts, the workload required for testing will pay off.
 
@@ -24,7 +24,7 @@ Unit tests, which have short execution times and provide immediate feedback, are
 
 It is difficult to consider all the settings, device versions, and combinations when adding new features, making manual testing costly. Eventually, team might start skipping tests that don’t seem related to the latest changes.
 
-With automated tests, the execution cost is nearly zero. By running tests for every commit or pull request, you can quickly verify that no regressions have been introduced.
+With automated tests, the execution cost is nearly zero. By running tests for every commit or every pull request, you can quickly verify that no regressions have been introduced.
 
 ### Pinpointing Bug Locations
 
@@ -38,11 +38,11 @@ If you add new code and existing tests fail, then there is likely an issue in th
 
 ### Shift Left
 
-With only manual tests, you can’t verify software behavior until the physical product is complete. If the hardware is delayed or devices are limited, development can stall. With unit tests, you can test component-level behavior using just a PC.
+With only manual tests, you can’t verify software behavior until the physical device is complete. If the hardware is delayed or devices are limited, development can stall. With unit tests, you can test component-level behavior on PC.
 
 This allows you to shift development efforts to earlier stages in the process. Since the cost of fixing issues increases as development progresses, shifting left helps reduce overall costs.
 
-<img src={shiftLeft} alt="Shift Left" width="700" />
+<img src={shiftLeft} alt="Shift Left" width="700" /> [^2]
 
 ### Living Documentation
 
@@ -65,7 +65,11 @@ Unit tests allow you to verify behavior in scenarios that are difficult to test 
 
 ## Caution
 
-Once tests are introduced, you’ll need to manage both the product code and the test code. If there are changes to the specifications, you’ll need to update not just the product code but the test code as well.
+After introducing tests, you’ll need to manage both the product code and the test code. If there are changes to the specifications, you’ll need to update not just the product code but the test code as well.
 
-Some might say, "See, unit testing is pointless and won’t stick" but I don’t believe that unit testing is ineffective. Rather, I think it's more about a lack of the necessary skills to make use of it. Creating software that is testable and less susceptible to specification changes requires skill.
+Some might say, "See, unit testing is pointless and won’t stick around." But I don’t think that unit testing is ineffective. In fact, many software development books dedicate an entire chapter or more to unit testing, highlighting how essential it is in the field. To claim that unit testing is useless after seeing such emphasis might take a bit of boldness, wouldn’t you agree?
 
+Rather, the reason unit testing doesn’t stick is often because we haven’t yet developed the skills needed to design and maintain both product and test code effectively. Creating software that is not only functional but also testable and resilient to specification changes requires a higher level of skill compared to simply getting it to work.
+
+[^1]: [https://egesoftware.blogspot.com/2013/03/mitos-de-los-tests-unitarios.html](https://egesoftware.blogspot.com/2013/03/mitos-de-los-tests-unitarios.html)
+[^2]: [https://devopedia.org/shift-left](https://devopedia.org/shift-left)

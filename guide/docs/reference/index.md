@@ -11,6 +11,12 @@ import atGoogle from "./img/atGoogle.png"
 
 [https://www.oreilly.com/library/view/test-driven-development/9781941222997/](https://www.oreilly.com/library/view/test-driven-development/9781941222997/)
 
+## Software Engineering at Google
+
+<img src={atGoogle} alt="Software Engineering at Google" width="150" />
+
+[https://abseil.io/resources/swe-book](https://abseil.io/resources/swe-book)
+
 ## 単体テストの考え方/使い方
 
 <img src={unitTesting} alt="単体テストの考え方/使い方" width="150" />
@@ -25,12 +31,6 @@ import atGoogle from "./img/atGoogle.png"
 
 [https://www.shoeisha.co.jp/book/detail/9784798176390](https://www.shoeisha.co.jp/book/detail/9784798176390)
 
-## Software Engineering at Google
-
-<img src={atGoogle} alt="Software Engineering at Google" width="150" />
-
-[https://abseil.io/resources/swe-book](https://abseil.io/resources/swe-book)
-
-## Google Test
+## GoogleTest User’s Guide
 
 [https://google.github.io/googletest/](https://google.github.io/googletest/)
