@@ -6,9 +6,9 @@ sidebar_position: 4
 
 ## How to Test Private Functions
 
-Private functions (i.e., static functions in C) that cannot be called from other files do not need to be tested at all. Private functions are called within public functions that are accessible from other files. Therefore, if you write tests for public functions, the private functions will naturally be tested as well.
+You do not need to test private functions (in C, these would be static functions) that cannot be called from other files. It is an anti-pattern to change a private function to public or use any kind of workaround just to make it testable from the test code.
 
-Changing a private function to public just for testing purposes is considered an anti-pattern. If you feel the need to call and test a private function directly, it’s likely that the structure is too opaque from the outside, so you should reconsider the design. Alternatively, you might be trying to test implementation details rather than behavior or specification.
+Private functions are called within public functions, so by writing tests for the public functions, the private functions will naturally be tested as well. If you feel the need to call a private function directly in your tests, it may indicate that your structure is too opaque and could benefit from reworking. Alternatively, you may be trying to test implementation details rather than behavior or specifications. Testing implementation details leads to brittle tests and can reduce the maintainability of the test code, so it’s best to avoid it.
 
 ## Is TDD Mandatory?
 
