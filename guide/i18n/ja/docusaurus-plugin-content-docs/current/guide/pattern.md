@@ -14,6 +14,8 @@ sidebar_position: 1
 
 テスト対象のコードが返す値が期待値と同じかどうか検証します。一番シンプルで書きやすいですが、テスト対象のコードが副作用がないことが前提です。
 
+![出力値ベーステスト](./img/output-based.svg)
+
 ```c title="出力値ベーステスト"
 TEST(Counter, オーバーフローしても正しく経過カウントを計算できる) {
     uint32_t startValue = 0xffffffff;
@@ -25,6 +27,8 @@ TEST(Counter, オーバーフローしても正しく経過カウントを計算
 ## 状態ベーステスト
 
 テスト対象コードが実行された後の状態（メンバ変数）を確認します。出力値ベーステストにくらべ少し複雑です。c言語だと以下のような感じです。
+
+![状態ベーステスト](./img/state-based.svg)
 
 ```c title="プロダクトコード couter.h"
 #ifndef COUNTER_H
@@ -121,4 +125,4 @@ TEST(Counter, オーバーフローカウントが増えること) {
 テスト対象コードが別の関数やAPIを正しく呼び出すことを確認します。呼び出し先をモックやスパイに置き換えることで検証を行います。
 実装は複雑になり、テストコードも長くなります。
 
-![./img/communicationTest.svg](./img/communicationTest.svg)
+![コミュニケーションベーステスト](./img/communication-based.svg)
