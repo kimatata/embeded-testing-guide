@@ -24,17 +24,21 @@ However, this only applies to E2E testing. It doesn't mean that unit testing or 
 
 ## Types of Testing
 
-Implementing tests requires an initial investment, so it's important to assess how long it will take to see a return on that investment. E2E tests are generally slowe to finish, and it takes developers longer to receive feedback. Due to the larger scope of testing, they are also more prone to breaking when the specifications change. In contrast, unit tests are fast, providing developers with quick feedback, and have a smaller scope, making them less affected by changes in the specifications. Naturally, the test automation I want to introduce in embedded software development is unit testing, which brings quicker returns. Even at Google, it is recommended that about 80% of all tests should be unit tests[^1].
+In automated testing, there are unit tests, integration tests, and E2E tests, but what type of testing should be introduced first in an environment that currently relies only on manual testing?
 
-When I proposed automated testing to the team, I noticed that the conversation shifted to automating manual tests instead of unit tests. It’s no surprise, given that the team had only ever done manual testing, and the idea of unit testing didn’t exist in their minds. For example, they talked about developing a robot to perform manual tests instead of humans. This is similar to what sometimes happens in the web industry, where capture-and-replay tools are considered for automated testing by those unfamiliar with testing. However, these tools merely replace manual testing and do not lead to substantial improvements in efficiency or quality.
+Unit tests have the advantage of being faster to execute compared to integration and E2E tests, allowing developers to get feedback quickly. Additionally, because the scope of code tested in unit tests is small, writing test code is relatively easy. On the other hand, while integration and E2E tests can more accurately replicate the behavior of the entire system, they take longer to execute and, due to their larger scope, are more susceptible to risks such as breaking when something goes wrong.
 
-<img src={pyramid} alt="Test Pyramid" width="300" />[^2]
+Since it takes a certain amount of effort to introduce automated testing, it’s essential to consider how quickly the investment will pay off. From this perspective, I believe that unit tests should be introduced first. Unit tests provide quicker returns, helping to accelerate the development cycle. Even Google recommends that about 80% of testing should consist of unit tests, positioning unit tests as the most important foundation in the testing pyramid.[^ratio]
+
+When I first suggested automated testing to my team, I noticed that many people were focused on automating manual testing. The team had only ever done manual testing, so the concept of unit testing was unfamiliar. Naturally, their first thought was to automate the manual tests they were already performing. For example, they imagined building a robot that could perform manual tests in place of a human. This is similar to how capture & replay tools are often considered in the web industry, usually by those unfamiliar with proper testing practices. Such tools only replace manual tests and do not lead to significant improvements in testing efficiency or quality.
+
+<img src={pyramid} alt="Test Pyramid" width="300" />[^pyramid]
 
 ## 100% Manual Testing
 
 As I mentioned, my workplace attempts to catch all bugs during the final stages of development through manual testing. This is an even worse situation than the “ice cream cone” anti-pattern known in test pyramids (since we don’t even have unit tests, there’s no cone). There’s no foundation to the pyramid.
 
-<img src={anti} alt="Anti-pattern" width="300" />[^3]
+<img src={anti} alt="Anti-pattern" width="300" />[^antipattern]
 
 I aimed to introduce unit testing in embedded software development to reduce the workload of manual testing and improve quality by catching bugs earlier. In fact, by implementing unit tests and CI in the products I manage, bugs were detected earlier during the implementation phase, rather than the pre-release system test phase. Coverage reports made it easy to verify whether branching conditions were fully covered, allowing us to quantify the quality of our tests.
 
@@ -51,6 +55,6 @@ Thus, the effort to instill testing practices in the embedded software developme
 
 This guide is a slightly revised version of the materials I used to explain how to introduce unit testing to my team. I hope it will be useful for those who understand the importance of testing but are unsure how to implement unit testing in embedded software development.
 
-[^1]: [Software Engineering at Google Chapter 16: Testing Overview Test Scope](https://abseil.io/resources/swe-book/html/ch11.html)
-[^2]: [Software Engineering at Google Chapter 16: Testing Overview Figure 11-3](https://abseil.io/resources/swe-book/html/ch11.html)
-[^3]: [Software Engineering at Google Chapter 16: Testing Overview Figure 11-4](https://abseil.io/resources/swe-book/html/ch11.html)
+[^ratio]: [Software Engineering at Google Chapter 16: Testing Overview Test Scope](https://abseil.io/resources/swe-book/html/ch11.html)
+[^pyramid]: [Software Engineering at Google Chapter 16: Testing Overview Figure 11-3](https://abseil.io/resources/swe-book/html/ch11.html)
+[^antipattern]: [Software Engineering at Google Chapter 16: Testing Overview Figure 11-4](https://abseil.io/resources/swe-book/html/ch11.html)
