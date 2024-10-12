@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Replacing with Mocks
 
-Mocks are a type of double that replaces DOC. Unlike dummies or spies, you don't need to create mocks yourself; they are provided by testing frameworks. If you're using GoogleTest, you can take advantage of GoogleMock.
+Mocks are a type of double that replaces collaborator. Unlike dummies or spies, you don't need to create mocks yourself; they are provided by testing frameworks. If you're using GoogleTest, you can take advantage of GoogleMock.
 
 Mocks differ from dummies that are used just for linking. They allow you to specify the expected behavior.
 
@@ -14,18 +14,17 @@ Below is the code for controlling a robot arm in `armCtrl.c`. The functions `rot
 #ifndef ARMCTRL_H
 #define ARMCTRL_H
 
-void rotate(int angle);
-void grab();
-void catchObject();
+#include "robot.h"
+
+void ArmCtrl_CatchObject(void);
 
 #endif // ARMCTRL_H
 ```
 
 ```c title="Product Code armCtrl.c"
 #include "armCtrl.h"
-#include "move.h"
 
-void catchObject() {
+void ArmCtrl_CatchObject(void) {
     rotate(90);
     grab();
 }
@@ -34,39 +33,39 @@ void catchObject() {
 Suppose you want to test that within `catchObject()`, the `rotate()` function is called once with an argument of 90, and the `grab()` function is called. By using mocks, you can test the interaction between these functions.
 
 ```c title="testArmCtrl.c"
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
+using namespace testing;
+
 extern "C" {
-    #include "armCtrl.h"
+#include "../../product/armCtrl/armCtrl.h"
 }
 
-// Definition of the mock class
-class MockArmController {
-public:
-    MOCK_METHOD(void, rotate, (int angle), ());
-    MOCK_METHOD(void, grab, (), ());
+class MockArmCtrl {
+  public:
+    MOCK_METHOD(void, mockRotate, (int angle), ());
+    MOCK_METHOD(void, mockGrab, (), ());
 };
 
-void mockRotate(int angle) {
-    MockArmController* mock = testing::Test::GetInstance()->GetMock<MockArmController>();
-    mock->rotate(angle);
+MockArmCtrl *g_mockArmCtrl = nullptr;
+
+void rotate(int angle) {
+    g_mockArmCtrl->mockRotate(angle);
 }
 
-void mockGrab() {
-    MockArmController* mock = testing::Test::GetInstance()->GetMock<MockArmController>();
-    mock->grab();
+void grab() {
+    g_mockArmCtrl->mockGrab();
 }
 
-TEST(ArmControllerTest, ArmRotatesAndGrabsObject) {
-    MockArmController mockController;
-    armCtrl::rotate = mockRotate;
-    armCtrl::grab = mockGrab;
+TEST(ArmControllerTest, armWillRotateThenCatchObject) {
+    MockArmCtrl mockArmCtrl;
+    g_mockArmCtrl = &mockArmCtrl;
 
-    // Expect that rotate() and grab() will be called within catchObject()
-    EXPECT_CALL(mockController, rotate(90)).Times(1);
-    EXPECT_CALL(mockController, grab()).Times(1);
-
-    catchObject();
+    // Expect rotate(), grab() will be called in catchObject()
+    EXPECT_CALL(mockArmCtrl, mockRotate(90)).Times(1);
+    EXPECT_CALL(mockArmCtrl, mockGrab()).Times(1);
+    ArmCtrl_CatchObject();
 }
 ```
 

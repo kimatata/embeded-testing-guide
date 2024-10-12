@@ -59,7 +59,7 @@ void Led_OFF(uint8_t ledNo) {
 }
 ```
 
-By using a spy instead of a dummy, a you can write test to verify that a certain LED is indeed turned on.
+By using a spy instead of a dummy, you can also write an expectation check to verify the LED status.
 
 ```c title="test Double(spy) led.c"
 static uint8_t led_value;

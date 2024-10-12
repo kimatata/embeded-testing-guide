@@ -4,12 +4,7 @@ sidebar_position: 2
 
 # テストコードのビルド
 
-CMakeによりビルドする。例として本レポジトリのサンプルコードをビルドする`CMakeLists.txt`を紹介します。プロジェクトのディレクトリ構造に従って修正が必要です。
-
-- `product`ディレクトリ配下にプロダクトコードを配置しています。
-- `test`には`double`ディレクトリと`test`ディレクトリが含まれます。
-  - `test/double`にはテスト実行時にマイコン上でのみ動作するコード置き換えるためのダブルのコードを配置しています。
-  - `test/test`にはテストコードを配置しています。
+CMakeでビルドします。例として本レポジトリのサンプルコードのディレクトリ構成と`CMakeLists.txt`を紹介します。プロジェクトのディレクトリ構造に従って修正が必要です。
 
 ## ディレクトリ構造
 
@@ -35,6 +30,11 @@ code
            ├─ testMain.cpp
            └─ CMakeLists.txt
 ```
+
+- `product`ディレクトリ配下にプロダクトコードを配置しています。
+- `test`には`double`ディレクトリと`test`ディレクトリが含まれます。
+  - `test/double`にはテスト実行時にマイコン上でのみ動作するコード置き換えるためのダブルのコードを配置しています。
+  - `test/test`にはテストコードを配置しています。
 
 ### ダブルライブラリ生成用CMakeLists.txt
 
@@ -76,7 +76,7 @@ target_link_libraries(ledCtrl double)
 ### テスト実行ファイル生成用CMakeLists.txt
 
 `code/test/test/CMakeLists.txt`はテスト実行ファイルをビルドするためのファイルです。
-ビルドが成功するとテスト実行ファイルが生成されます。
+ビルドが成功すると`runTests`という名前のテスト実行ファイルが生成されます。
 
 ```cmake title="code/test/test/CMakeLists.txt"
 cmake_minimum_required(VERSION 3.14)

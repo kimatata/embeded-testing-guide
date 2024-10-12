@@ -4,14 +4,7 @@ sidebar_position: 2
 
 # Building Test Code
 
-<!-- Build using CMake. Here is an example of a CMakeLists.txt for building the sample code in this repository. You will need to modify it according to the directory structure of your project. -->
-
-Build using CMake. As an example, here is the CMakeLists.txt to build the sample code in this repository. You will need to modify it to suit your project directory structure.
-
-- The product code is located under the `product` directory.
-- The `test` directory contains both the `double` directory and the `test` directory.
-  - The `test/double` directory contains double code, used to replace code that only runs on the microcontroller during test execution.
-  - The `test/test` directory contains the test code.
+Build with CMake. As an example, here is the directory structure and `CMakeLists.txt` of the sample code in this repository. You need to modify it according to your project's directory structure.
 
 ## Directory Structure
 
@@ -37,6 +30,11 @@ code
            ├─ testMain.cpp
            └─ CMakeLists.txt
 ```
+
+- The product code is located under the `product` directory.
+- The `test` directory contains both the `double` directory and the `test` directory.
+  - The `test/double` directory contains double code, used to replace code that only runs on the microcontroller during test execution.
+  - The `test/test` directory contains the test code.
 
 ### CMakeLists.txt for Double Library Generation
 
@@ -75,7 +73,8 @@ target_link_libraries(ledCtrl double)
 
 ### CMakeLists.txt for Generating the Test Executable
 
-`code/test/test/CMakeLists.txt` is used to build the test executable. Once the build is successful, the test executable is generated.
+`code/test/test/CMakeLists.txt` is used to build the test executable.
+If the build succeeds, a test executable named `runTests` will be generated.
 
 ```cmake title="code/test/test/CMakeLists.txt"
 cmake_minimum_required(VERSION 3.14)
