@@ -7,9 +7,9 @@
     "message": "イントロ",
     "description": "The label for category Intro in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.Guide": {
-    "message": "ガイド",
-    "description": "The label for category Guide in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.Patterns": {
+    "message": "パターン",
+    "description": "The label for category Patterns in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.How to Break Dependency": {
     "message": "依存関係を断ち切る",
