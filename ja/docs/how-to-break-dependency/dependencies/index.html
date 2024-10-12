@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">依存関係 | Embeded Testing Guide</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://docusaurus.io/embeded-testing-guide/ja/docs/how-to-break-dependency/dependencies"><meta data-rh="true" property="og:locale" content="ja"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="ja"><meta data-rh="true" name="docsearch:language" content="ja"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="依存関係 | Embeded Testing Guide"><meta data-rh="true" name="description" content="組み込み製品のコードに単体テストを適用しようとすると、テスト対象コードがマイコン上でしか動作しないコードに依存しているため、テスト環境ではビルドが通らないと思われます。このようなハードウェアやマイコン固有の依存関係を「コラボレータ」と呼びます。テストを可能にするためには、これらのコラボレータを切り離したり、テストダブルで置き換える必要があります。"><meta data-rh="true" property="og:description" content="組み込み製品のコードに単体テストを適用しようとすると、テスト対象コードがマイコン上でしか動作しないコードに依存しているため、テスト環境ではビルドが通らないと思われます。このようなハードウェアやマイコン固有の依存関係を「コラボレータ」と呼びます。テストを可能にするためには、これらのコラボレータを切り離したり、テストダブルで置き換える必要があります。"><link data-rh="true" rel="icon" href="/embeded-testing-guide/ja/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://docusaurus.io/embeded-testing-guide/ja/docs/how-to-break-dependency/dependencies"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/how-to-break-dependency/dependencies" hreflang="en"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/ja/docs/how-to-break-dependency/dependencies" hreflang="ja"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/how-to-break-dependency/dependencies" hreflang="x-default"><link rel="stylesheet" href="/embeded-testing-guide/ja/assets/css/styles.d891716c.css">
-<script src="/embeded-testing-guide/ja/assets/js/runtime~main.1c9cab66.js" defer="defer"></script>
+<script src="/embeded-testing-guide/ja/assets/js/runtime~main.9a93badf.js" defer="defer"></script>
 <script src="/embeded-testing-guide/ja/assets/js/main.a3a2286b.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -12,10 +12,10 @@
 <p>組み込み製品のコードに単体テストを適用しようとすると、テスト対象コードが マイコン上でしか動作しないコードに依存しているため、テスト環境ではビルドが通らないと思われます。このようなハードウェアやマイコン固有の依存関係を「コラボレータ」と呼びます。テストを可能にするためには、これらのコラボレータを切り離したり、テストダブルで置き換える必要があります。</p>
 <p><img decoding="async" loading="lazy" alt="依存関係" src="/embeded-testing-guide/ja/assets/images/dependencies-795d3db431961b38dcca05ad39107dca.svg" class="img_ev3q"></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="ダブルとは">ダブルとは<a href="#ダブルとは" class="hash-link" aria-label="ダブルとは への直接リンク" title="ダブルとは への直接リンク">​</a></h2>
-<p>テストダブルとは、フェイク、スパイ、ダミー、モックなど、テストで使用する代替オブジェクトの総称です。</p>
+<p>テストダブルとは、ダミー、スタブ、モック、スパイなど、テストで使用する代替オブジェクトの総称です。</p>
 <ul>
 <li>ダミー: テストのために必要最低限のオブジェクト。特にリンクを通すためだけのもの。</li>
-<li>スタブ: 固定の値を返す代替オブジェクト。</li>
+<li>スタブ: 固定値を返す代替オブジェクト。</li>
 <li>モック:  テスト中に関数の呼び出し回数やパラメータを記録・検証することができ、特定の振る舞いをシミュレーションします。多くの場合、テスティングフレームワークが提供します。</li>
 <li>スパイ: 自作のモックの一種で、特に関数がどのように呼ばれたか（呼び出し回数や引数など）を追跡します。</li>
 </ul>

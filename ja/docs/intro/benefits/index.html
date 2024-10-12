@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">単体テスト導入のメリット | Embeded Testing Guide</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/benefits"><meta data-rh="true" property="og:locale" content="ja"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="ja"><meta data-rh="true" name="docsearch:language" content="ja"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="単体テスト導入のメリット | Embeded Testing Guide"><meta data-rh="true" name="description" content="このチャプターは一般的な単体テスト導入によるメリットの説明です。すでに単体テストに詳しい人は読む必要はありません。早く組み込みで単体テスト導入する方法を知りたいという人は次の章に進んでください。"><meta data-rh="true" property="og:description" content="このチャプターは一般的な単体テスト導入によるメリットの説明です。すでに単体テストに詳しい人は読む必要はありません。早く組み込みで単体テスト導入する方法を知りたいという人は次の章に進んでください。"><link data-rh="true" rel="icon" href="/embeded-testing-guide/ja/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/benefits"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/intro/benefits" hreflang="en"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/benefits" hreflang="ja"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/intro/benefits" hreflang="x-default"><link rel="stylesheet" href="/embeded-testing-guide/ja/assets/css/styles.d891716c.css">
-<script src="/embeded-testing-guide/ja/assets/js/runtime~main.1c9cab66.js" defer="defer"></script>
+<script src="/embeded-testing-guide/ja/assets/js/runtime~main.9a93badf.js" defer="defer"></script>
 <script src="/embeded-testing-guide/ja/assets/js/main.a3a2286b.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,16 +16,16 @@
 <p><img src="/embeded-testing-guide/ja/assets/images/breakeven-c520ae6425e43f3751491931caa4cb36.jpg" alt="損益分岐点" width="700"> <sup><a href="#user-content-fn-breakeven" id="user-content-fnref-breakeven" data-footnote-ref="true" aria-describedby="footnote-label">1</a></sup></p>
 <p>実行時間が短くすぐさまフィードバックを得られ、仕様変更の影響を受けずらい単体テストは統合テスト、マニュアルテスト(E2Eテスト)よりもリターンを得やすいです。規模の小さいプロジェクトでも導入する価値はあるはずです。使い捨てのスクリプトとかでない限りテストにかかる工数はペイできます。</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="デグレの防止">デグレの防止<a href="#デグレの防止" class="hash-link" aria-label="デグレの防止 への直接リンク" title="デグレの防止 への直接リンク">​</a></h3>
-<p>多数の設定値、バージョンの組み合わせ等をすべて考慮して機能を追加するのは難易度が高く、動作確認にコストがかかります。次第に「このテストケースは今回の変更とは関係ないよね」といった感じで一部の動作確認をスキップするようになっていきます。しかし実際には、変更が本当に影響を与えないかどうかを完ぺきに予測することは誰にもできません。</p>
-<p>自動テストならば実行のコストはほぼ0です。commitごと、pull requestごとといった風にソースコードに変更を加える度に自動テストを 走らせることでデグレが発生していないことを素早く検証できます。</p>
+<p>多数の設定値、バージョンの組み合わせ等をすべて考慮して機能を追加するのは難易度が高く、動作確認にコストがかかります。次第に「このテストケースは今回の変更とは関係ないよね」といった感じで一部の動作確認をスキップするようになっていきます。しかし実際には、変更が本当に影響を与えないかどうかを完璧に予測することは誰にもできません。</p>
+<p>自動テストならば実行のコストはほぼ0です。commitごと、pull requestごとといった風にソースコードに変更を加える度に自動テストを走 らせることでデグレが発生していないことを素早く検証できます。</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="バグ発生箇所を特定">バグ発生箇所を特定<a href="#バグ発生箇所を特定" class="hash-link" aria-label="バグ発生箇所を特定 への直接リンク" title="バグ発生箇所を特定 への直接リンク">​</a></h3>
 <p>単体テストで失敗してもテスティングフレームワークがどこで失敗したか、期待値は何で実際の値は何かを示してくれます。マニュアルテストでバグを見つけ出そうと思ったら実際にモノを動かして時間をかけてバグを出して、そこから問題の部分を特定する作業が発生します。</p>
 <img src="/embeded-testing-guide/ja/assets/images/gTest-8d6c922060eaa7128d12091d7ff3f045.png" alt="gtest" width="700">
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="自信を持って開発を進める">自信を持って開発を進める<a href="#自信を持って開発を進める" class="hash-link" aria-label="自信を持って開発を進める への直接リンク" title="自信を持って開発を進める への直接リンク">​</a></h3>
 <p>新しくコードを追加して、既存のテストがこけたなら、新しく書いたコードの中に問題がある。テストが通れば安心。</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="シフトレフト">シフトレフト<a href="#シフトレフト" class="hash-link" aria-label="シフトレフト への直接リンク" title="シフトレフト への直接リンク">​</a></h3>
-<p>マニュアルテストしかなければ現物ができるまでソフトの動作を確認することができません。もし基盤の完成が遅れたりデバイスの数が限られていたら開発を進めることができません。単体テストがあればPC上でコンポーネント単位ではありますが、検証が可能です。</p>
-<p>これにより 開発工数を開発プロセスの前半に持ってくることが可能です。開発段階が後ろにいくほど同じ修正でもコストは上がるため、シフトレフトにより工数の削減が期待できます。</p>
+<p>マニュアルテストしかなければ現物ができるまでソフトの動作を確認することができません。もし基板の完成が遅れたりデバイスの数が限られていたら開発を進めることができません。単体テストがあればPC上でコンポーネント単位ではありますが、検証が可能です。</p>
+<p>これにより開 発工数を開発プロセスの前半に持ってくることが可能です。開発段階が後ろにいくほど同じ修正でもコストは上がるため、シフトレフトにより工数の削減が期待できます。</p>
 <p><img src="/embeded-testing-guide/ja/assets/images/shift-left-4e958729690fa4214f7f6686dab061ae.png" alt="シフトレフト" width="700"> <sup><a href="#user-content-fn-shiftleft" id="user-content-fnref-shiftleft" data-footnote-ref="true" aria-describedby="footnote-label">2</a></sup></p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="動く仕様書">動く仕様書<a href="#動く仕様書" class="hash-link" aria-label="動く仕様書 への直接リンク" title="動く仕様書 への直接リンク">​</a></h3>
 <p>googletestのテストケース実行用マクロ<code>TEST</code>は引数にテストケース名を入れます。これによりテスト対象のコードのふるまいを説明することができます。<code>TEST(テストスイート名, テストケース名)</code>（日本語も入れることができます）</p>

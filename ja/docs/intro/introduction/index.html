@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">組み込みソフトウェア開発の現状 | Embeded Testing Guide</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://docusaurus.io/embeded-testing-guide/ja/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/introduction"><meta data-rh="true" property="og:locale" content="ja"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="ja"><meta data-rh="true" name="docsearch:language" content="ja"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="組み込みソフトウェア開発の現状 | Embeded Testing Guide"><meta data-rh="true" name="description" content="私はとあるメーカーで組み込みソフトウェア開発をしています。それほど経験が豊富なわけではありませんが、私が経験したプロジェクトのソフトウェア開発プロセスは非常に遅れていました。テストコードは一切なく、テストはすべて手動で実行され、デグレが頻繁に発生し、リリースが遅れることはもはや日常茶飯事でした。"><meta data-rh="true" property="og:description" content="私はとあるメーカーで組み込みソフトウェア開発をしています。それほど経験が豊富なわけではありませんが、私が経験したプロジェクトのソフトウェア開発プロセスは非常に遅れていました。テストコードは一切なく、テストはすべて手動で実行され、デグレが頻繁に発生し、リリースが遅れることはもはや日常茶飯事でした。"><link data-rh="true" rel="icon" href="/embeded-testing-guide/ja/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/introduction"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/intro/introduction" hreflang="en"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/ja/docs/intro/introduction" hreflang="ja"><link data-rh="true" rel="alternate" href="https://docusaurus.io/embeded-testing-guide/docs/intro/introduction" hreflang="x-default"><link rel="stylesheet" href="/embeded-testing-guide/ja/assets/css/styles.d891716c.css">
-<script src="/embeded-testing-guide/ja/assets/js/runtime~main.1c9cab66.js" defer="defer"></script>
+<script src="/embeded-testing-guide/ja/assets/js/runtime~main.9a93badf.js" defer="defer"></script>
 <script src="/embeded-testing-guide/ja/assets/js/main.a3a2286b.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -12,24 +12,24 @@
 <p>私はとあるメーカーで組み込みソフトウェア開発をしています。それほど経験が豊富なわけではありませんが、私が経験したプロジェクトのソフトウェア開発プロセスは非常に遅れていました。テストコードは一切なく、テストはすべて手動で実行され、デグレが頻繁に発生し、リリースが遅れることはもはや日常茶飯事でした。</p>
 <p>なぜテストの自動化を行わないのか？と上司や同僚に尋ねたところ、こんな答えが返ってきました。</p>
 <ul>
-<li>「組み込みは実際にデバイスを動かさないとわからないからできないでしょ」</li>
+<li>「組み込みは実際に機械を動かさないと結果がわからないからテストの自動化なんてできないでしょ」</li>
 <li>「テストコードとかってウェブ系の話だよね?」</li>
-<li>「組 み込みソフトは組み込みデバイス上で動くからそれをエミュレートするのは大変だよ」</li>
+<li>「組み込みソフトは組み込み基板上で動くからそれをエミュレートするのは大変だよ」</li>
 <li>「テストコードってなに?」</li>
 </ul>
 <p>総じてテストの自動化なんて無理だよね。結局、今のやり方を続けるしかないんだよ、という感じです。</p>
-<p>彼らの言っていることはわかります。ウェブ開発はブラウザという統一的な環境であり、<a href="https://www.selenium.dev/" target="_blank" rel="noopener noreferrer">Selenium</a>や<a href="https://playwright.dev/" target="_blank" rel="noopener noreferrer">Playwrite</a>といったブラウザを自動操作するための優れたオープンソースのツールがあります。企業やプロジェクトごとに異なる無数の組み込みデバイスの一つをエミュレートするためのソフトを作るのはコストが釣り合わないでしょう（医療や宇宙開発分野のような一つのバグが致命的な損害につながるところなら必要だと思います）。</p>
+<p>彼らの言っていることはわかります。ウェブ開発はブラウザという統一的な環境であり、<a href="https://www.selenium.dev/" target="_blank" rel="noopener noreferrer">Selenium</a>や<a href="https://playwright.dev/" target="_blank" rel="noopener noreferrer">Playwrite</a>といったブラウザを自動操作するための優れたオープンソースのツールがあります。プロジェクトごとに異なる無数の組み込みデバイスの一つをエミュレートする環境を作るのはコストが釣り合わないでしょう（医療や宇宙開発分野のような一つのバグが致命的な損害につながるところなら必要だと思います）。</p>
 <p>しかしそれはE2Eテストに限った話です。単体テストや統合テストが難しい理由にはなりません。組み込みソフトウェアもロジックの集合体である以上、単体テストで十分にバグを発見できるはずです。実際、手動テストや市場で見つかるバグのほとんどは分岐処理における条件ミスといったロジックに起因するものでした。これらは明らかに手動テストで発見すべき問題ではありません。単体テストで早期に見つけるべきバグです。私には、組み込みであることを言い訳に、自動化は無理だと早合点し、ソフトウェアテストに関する十分な知識を得ようともせずに、現状の方法に固執しているように感じられました。</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="テストの種類">テストの種類<a href="#テストの種類" class="hash-link" aria-label="テストの種類 への直接リンク" title="テストの種類 への直接リンク">​</a></h2>
 <p>自動テストには、単体テスト、統合テスト、E2Eテストがありますが、マニュアルテストしか行っていない現場では、どのテストを最初に導入すべきでしょうか？</p>
 <p>単体テストは、統合テストやE2Eテストに比べて実行時間が短く、開発者が迅速にフィードバックを得ることができます。また、テストするコードのスコープが小さいため、比較的簡単にテストコードを実装できるという利点もあります。一方、統合テストやE2Eテストはシステム全体の動作をより忠実に再現できるものの、実行時間が長くなり、テストのスコープが大きいことから障害リスクが高まりやすいという特徴があります。</p>
-<p>テストの導入には一定の工数がかかるため、どれくらいの期間でその投資を回収できるかを考慮することが重要です。この観点から、私はまず単体テストを導入すべきだと考えています。単体テストは、より早くリターンを得ることができ、開発サイクルを迅速化する効果が期待できます。Googleでも、テストの約80%を単体テストで構成することが推奨されており、単体テストがテストピラミッドの最も重要な基盤として位置づけられています。<sup><a href="#user-content-fn-ratio" id="user-content-fnref-ratio" data-footnote-ref="true" aria-describedby="footnote-label">1</a></sup></p>
-<p>実際にチームに自動テストを提案したとき、手動テストの自動化を考えている人が多いことに気づきました。チームではこれまで手動テストしか行っておらず、そもそも単体テストの概念が浸透していなかったため、手動で行っているテスト作業をそのまま自動化しようと考  えるのは当然の流れでした。たとえば、人の代わりに手動テストを行うロボットを開発する、といった具合です。これは、ウェブ業界で（しばしばテストに詳しくない人々によって）キャプチャ&amp;リプレイツールの導入が検討される事例に似ています。こうしたツールは手動テストの置き換えに過ぎず、テストの本質的な効率化や品質向上には直結しません。</p>
+<p>実際にチームに自動テストを提案したとき、手動テストの自動化を考えている人が多いことに気づきました。チームではこれまで手動テストしか行っておらず、そもそも単体テストの概念が浸透していなかったため、手動で行っているテスト作業をそのまま自動化しようと考えるのは当然の流れでした。たとえば、人の代わりに手動テストを行うロボットを開発する、といった具合です。これは、ウェブ業界で（しばしばテストに詳しくない人々によって）キャプチャ&amp;リプレイツールの導入が検討される事例に似ています。こうしたツールは手動テストの置き換えに過ぎず、テストの本質的な効率化や品質向上には直結しません。</p>
+<p>テストの導入には一定の工数がかかるため、どれくらいの期間でその投資を回収できるかを考慮することが重要です。この観点から、私はまず単体テストを導入すべきだと考えていま す。単体テストは、より早くリターンを得ることができ、開発サイクルを迅速化する効果が期待できます。Googleでも、テストの約80%を単体テストで構成することが推奨されており、単体テストがテストピラミッドの最も重要な基盤として位置づけられています。<sup><a href="#user-content-fn-ratio" id="user-content-fnref-ratio" data-footnote-ref="true" aria-describedby="footnote-label">1</a></sup></p>
 <p><img src="/embeded-testing-guide/ja/assets/images/pyramid-28c9e4f7052e5cb3b272803a0c499fa6.png" alt="テストピラミッド" width="300"><sup><a href="#user-content-fn-pyramid" id="user-content-fnref-pyramid" data-footnote-ref="true" aria-describedby="footnote-label">2</a></sup></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="手動テスト100">手動テスト100%<a href="#手動テスト100" class="hash-link" aria-label="手動テスト100% への直接リンク" title="手動テスト100% への直接リンク">​</a></h2>
 <p>前述の通り、私の職場はすべてのバグを開発工程の終盤に手動テストで発見しようとしていました。これはテストピラミッドのアンチパターンとして知られている「アイスクリームコーン型」よりもさらにひどい状態であり、（単体テストが一切ないのでコーンもない）。ピラミッドの基盤すらない状態です。</p>
 <p><img src="/embeded-testing-guide/ja/assets/images/anti-8cfba9bf0b49b1a3660b03f94886e5dd.png" alt="アンチパターン" width="300"><sup><a href="#user-content-fn-antipattern" id="user-content-fnref-antipattern" data-footnote-ref="true" aria-describedby="footnote-label">3</a></sup></p>
-<p>このような非効率なテストの構成を見直し、手動テストにかかる工数の削減とバグの早期発見による品質向上を達成するため私は組み込みソフトウェア開発に単体テスト導入することを目指しました。実際、私が担当 している製品に単体テストとCIを導入したことで、バグの発見がリリース前の手動テストフェーズから実装フェーズに早期化されました。カバレッジレポートにより分岐を網羅できているかどうかの確認が容易になり、テストの品質を定量化できるようになりました。</p>
+<p>このような非効率なテストの構成を見直し、手動テストにかかる工数の削減とバグの早期発見による品質向上を達成するため私は自身の担当製品に単体テストとCI<sup><a href="#user-content-fn-ci" id="user-content-fnref-ci" data-footnote-ref="true" aria-describedby="footnote-label">4</a></sup>を導入しました。これによりバグの発見がリリース前の手動テストフェーズから実装フェーズに早期化されました。カバレッジレポートにより分岐を網羅できているかどうかの確認が容易になり、テストの品質を定量化できるようになりました。</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="チームの反応">チームの反応<a href="#チームの反応" class="hash-link" aria-label="チームの反応 への直接リンク" title="チームの反応 への直接リンク">​</a></h2>
 <p>私が単体テストを導入した成果をメンバーに紹介したところ、反応はまちまちでした。単体テストに興味を持ち、導入し始めてくれている人ももいれば、無関心な人もいました。</p>
 <ul>
@@ -41,7 +41,7 @@
 <p>ということで、組み込みソフト開発チームにテストを根付かせる活動はまだ道半ばです。テスト導入の効果を引き続き紹介し、今後もテストの重要性を広める活動を続けていく予定です。</p>
 <p>本ガイドは、私がチームに単体テストを導入する方法を説明した資料を一部修正したものです。テストの重要性はわかるけど組み込みで単体テストを導入する方法がわからない、という方にとって参考になれば嬉しいです。</p>
 <!-- -->
-<section data-footnotes="true" class="footnotes"><h2 class="anchor anchorWithStickyNavbar_LWe7 sr-only" id="footnote-label">Footnotes<a href="#footnote-label" class="hash-link" aria-label="Footnotes への直接リンク" title="Footnotes への直接リンク">​</a></h2>
+<section data-footnotes="true" class="footnotes"><h2 class="anchor anchorWithStickyNavbar_LWe7 sr-only" id="footnote-label">Footnotes<a href="#footnote-label" class="hash-link" aria-label="Footnotes への直接リンク" title="Footnotes への直接リ  ンク">​</a></h2>
 <ol>
 <li id="user-content-fn-ratio">
 <p><a href="https://abseil.io/resources/swe-book/html/ch11.html" target="_blank" rel="noopener noreferrer">Software Engineering at Google 16章 Testing Overview Test Scope</a> <a href="#user-content-fnref-ratio" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
@@ -51,6 +51,9 @@
 </li>
 <li id="user-content-fn-antipattern">
 <p><a href="https://abseil.io/resources/swe-book/html/ch11.html" target="_blank" rel="noopener noreferrer">Software Engineering at Google 16章 Testing Overview Figure 11-4</a> <a href="#user-content-fnref-antipattern" data-footnote-backref="" aria-label="Back to reference 3" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-ci">
+<p>CIとは、Continuous Integrationの(継続的インテグレーション)略で、開発者が書いた新しいコードをマスターブランチに頻繁に統合するプロセスのこと <a href="#user-content-fnref-ci" data-footnote-backref="" aria-label="Back to reference 4" class="data-footnote-backref">↩</a></p>
 </li>
 </ol>
 </section></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/intro/introduction.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>このページを編集</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="ドキュメントページ"><a class="pagination-nav__link pagination-nav__link--next" href="/embeded-testing-guide/ja/docs/intro/benefits"><div class="pagination-nav__sublabel">次へ</div><div class="pagination-nav__label">単体テスト導入のメリット</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#テストの種類" class="table-of-contents__link toc-highlight">テストの種類</a></li><li><a href="#手動テスト100" class="table-of-contents__link toc-highlight">手動テスト100%</a></li><li><a href="#チームの反応" class="table-of-contents__link toc-highlight">チームの反応</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 embeded-testing-guide. Built with Docusaurus.</div></div></div></footer></div>
