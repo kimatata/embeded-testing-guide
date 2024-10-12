@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # モックによる置き換え
 
-モックもダブルの一種であり、DOCを置き換えるものです。ダミーやスパイのように自分で作る必要はなく、テスティングフレームワークによって用意されます。GoogleTestを使用するならGoogleMockが利用できます。
+モックもダブルの一種であり、コラボレータを置き換えるものです。ダミーやスパイのように自分で作る必要はなく、テスティングフレームワークによって用意されます。GoogleTestを使用するならGoogleMockが利用できます。
 
 モックはただリンクを通すためのダミーとは違い、期待する動きを指定することができます。
 
@@ -14,18 +14,17 @@ sidebar_position: 5
 #ifndef ARMCTRL_H
 #define ARMCTRL_H
 
-void rotate(int angle);
-void grab();
-void catchObject();
+#include "robot.h"
+
+void ArmCtrl_CatchObject(void);
 
 #endif // ARMCTRL_H
 ```
 
 ```c title="プロダクトコード armCtrl.c"
 #include "armCtrl.h"
-#include "move.h"
 
-void catchObject() {
+void ArmCtrl_CatchObject(void) {
     rotate(90);
     grab();
 }
@@ -34,40 +33,42 @@ void catchObject() {
 `catchObject()`の中で`rotate()`という関数が引数90で一度コールされ、`grab()`という関数がコールされることをテストしたいとします。モックを使うことで関数の呼び出し、つまりコミュニケーションをテストすることができます。
 
 ```c title="testArmCtrl.c"
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
+using namespace testing;
+
 extern "C" {
-    #include "armCtrl.h"
+#include "../../product/armCtrl/armCtrl.h"
 }
 
 // モッククラスの定義
-class MockArmController {
-public:
-    MOCK_METHOD(void, rotate, (int angle), ());
-    MOCK_METHOD(void, grab, (), ());
+class MockArmCtrl {
+  public:
+    MOCK_METHOD(void, mockRotate, (int angle), ());
+    MOCK_METHOD(void, mockGrab, (), ());
 };
 
-void mockRotate(int angle) {
-    MockArmController* mock = testing::Test::GetInstance()->GetMock<MockArmController>();
-    mock->rotate(angle);
+MockArmCtrl *g_mockArmCtrl = nullptr;
+
+void rotate(int angle) {
+    g_mockArmCtrl->mockRotate(angle);
 }
 
-void mockGrab() {
-    MockArmController* mock = testing::Test::GetInstance()->GetMock<MockArmController>();
-    mock->grab();
+void grab() {
+    g_mockArmCtrl->mockGrab();
 }
 
-TEST(ArmControllerTest, アームが回転し物体をつかむ) {
-    MockArmController mockController;
-    armCtrl::rotate = mockRotate;
-    armCtrl::grab = mockGrab;
+TEST(ArmControllerTest, armWillRotateThenCatchObject) {
+    MockArmCtrl mockArmCtrl;
+    g_mockArmCtrl = &mockArmCtrl;
 
     // catchObject()内でrotate(), grab()が呼び出されることを期待する
-    EXPECT_CALL(mockController, rotate(90)).Times(1);
-    EXPECT_CALL(mockController, grab()).Times(1);
-
-    catchObject();
+    EXPECT_CALL(mockArmCtrl, mockRotate(90)).Times(1);
+    EXPECT_CALL(mockArmCtrl, mockGrab()).Times(1);
+    ArmCtrl_CatchObject();
 }
+
 ```
 
 モックは強力ですが、多用するとテストコードが仕様やふるまいというより実装の詳細をテストしているようになります。
